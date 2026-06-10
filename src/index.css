@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .tech-name {
+        @apply text-lg font-bold tracking-widest text-gray-900 dark:text-white;
+    }
+
+    .academic-badge,
+    .cncp-badge,
+    .aws-badge,
+    .icpep-badge {
+        @apply flex items-center gap-1 px-2 py-1 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 transition-all duration-300 hover:scale-110 hover:shadow-md;
+    }
+
+    .cncp-badge:hover,
+    .aws-badge:hover,
+    .icpep-badge:hover {
+        @apply no-underline border-blue-400 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20;
+    }
+
+    .profile-picture {
+        @apply w-20 h-20 rounded-xl object-cover border border-[#d0d7de] dark:border-gray-600 transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer;
+    }
+
+    .mini-card {
+        @apply flex items-center gap-2 px-3 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-all duration-200;
+    }
+
+    .mini-card.social-icon-only {
+        @apply w-9 h-9 p-0 flex items-center justify-center;
+    }
+
+    .hover-linkedin:hover {
+        @apply border-blue-400 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-[0_8px_18px_-14px_rgba(59,130,246,0.8)];
+    }
+
+    .hover-github:hover {
+        @apply border-gray-600 dark:border-gray-400 bg-gray-50 dark:bg-gray-700/50 shadow-[0_8px_18px_-14px_rgba(0,0,0,0.5)];
+    }
+
+    .hover-facebook:hover {
+        @apply border-blue-600 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-[0_8px_18px_-14px_rgba(37,99,235,0.8)];
+    }
+
+    .hover-instagram:hover {
+        @apply border-pink-600 dark:border-pink-500 bg-pink-50 dark:bg-pink-900/20 shadow-[0_8px_18px_-14px_rgba(236,72,153,0.8)];
+    }
+
+    .hover-youtube:hover {
+        @apply border-red-600 dark:border-red-500 bg-red-50 dark:bg-red-900/20 shadow-[0_8px_18px_-14px_rgba(220,38,38,0.8)];
+    }
+
+    .bento-card {
+        @apply p-6 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm transition-all duration-200;
+    }
+
+    .section-header {
+        @apply text-xs font-bold uppercase text-gray-400 dark:text-gray-400 tracking-[0.2em] mb-4;
+    }
+
+    .inner-item-card {
+        @apply p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200;
+    }
+
+    .project-item {
+        @apply cursor-pointer;
+    }
+
+    .project-title-link {
+        @apply no-underline;
+    }
+
+    .tech-badge {
+        @apply inline-block px-2 py-1 text-xs font-medium rounded border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200;
+    }
+
+    .icon-bw {
+        @apply filter dark:invert;
+    }
+}
+
+body {
+    @apply transition-colors;
+}
