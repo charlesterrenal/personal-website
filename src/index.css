@@ -13,15 +13,20 @@
 
 @layer components {
   .timeline-container {
-    @apply relative border-l border-black/10 dark:border-white/10 ml-4 pl-8 pb-12 transition-colors duration-500;
+    @apply relative border-l border-black/10 dark:border-white/10 ml-4 pl-8 pb-12 transition-colors duration-500 hover:border-black/40 dark:hover:border-white/40;
   }
   
   .timeline-icon {
-    @apply absolute -left-[17px] top-0 w-8 h-8 rounded-full bg-[#f0f0ea] dark:bg-[#111111] border border-black/10 dark:border-white/10 flex items-center justify-center p-0.5 transition-colors duration-500;
+    @apply absolute -left-[17px] top-0 w-8 h-8 rounded-full bg-[#f0f0ea] dark:bg-[#111111] border border-black/10 dark:border-white/10 flex items-center justify-center p-0.5 transition-all duration-500;
   }
 
   .timeline-icon-small {
-    @apply absolute -left-[13px] top-1 w-6 h-6 rounded-full bg-[#f0f0ea] dark:bg-[#111111] border border-black/10 dark:border-white/10 flex items-center justify-center p-1 transition-colors duration-500;
+    @apply absolute -left-[13px] top-1 w-6 h-6 rounded-full bg-[#f0f0ea] dark:bg-[#111111] border border-black/10 dark:border-white/10 flex items-center justify-center p-1 transition-all duration-500;
+  }
+
+  .timeline-container:hover .timeline-icon,
+  .timeline-container:hover .timeline-icon-small {
+    @apply scale-110 border-black/40 dark:border-white/40 shadow-sm;
   }
 
   .pill {
