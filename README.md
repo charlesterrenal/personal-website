@@ -8,13 +8,14 @@ This project showcases my journey in computer engineering, networking, and syste
 A minimalist, self-hosted portfolio built to showcase my technical journey, projects, and professional background as an aspiring **Network Engineer**.
 
 ## Technical Stack:
-* **Frontend:** HTML & CSS
+* **Frontend:** React, Tailwind CSS, tsParticles, Framer Motion
 * **Deployment:** Cloudflare, Nginx Proxy Manager
 * **Environment:** Developed and managed on [**AHHS** (A Humble Home Server)](https://github.com/charlesterrenal/ahhs).
 
 ## Project Structure
-* `\/images`: Images, resumes, and static files.
-* `\index.html\`: The main landing page.
+* `public/images`: Images, resumes, and static files.
+* `src/App.jsx`: The main React application component.
+* `index.html`: The Vite entry point.
 
 ---
 
@@ -24,4 +25,4 @@ A minimalist, self-hosted portfolio built to showcase my technical journey, proj
 * **Email:** contact@charlesterrenal.com
 
 ---
-*Last updated: March 2026*
+*Last updated: July 2026*

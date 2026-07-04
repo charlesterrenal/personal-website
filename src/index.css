@@ -2,85 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-    .tech-name {
-        @apply text-lg font-bold tracking-widest text-gray-900 dark:text-white;
-    }
-
-    .academic-badge,
-    .cncp-badge,
-    .aws-badge,
-    .icpep-badge {
-        @apply flex items-center gap-1 px-2 py-1 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 transition-all duration-300 hover:scale-110 hover:shadow-md;
-    }
-
-    .cncp-badge:hover,
-    .aws-badge:hover,
-    .icpep-badge:hover {
-        @apply no-underline border-blue-400 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20;
-    }
-
-    .profile-picture {
-        @apply w-20 h-20 rounded-xl object-cover border border-[#d0d7de] dark:border-gray-600 transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer;
-    }
-
-    .mini-card {
-        @apply flex items-center gap-2 px-3 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-all duration-200;
-    }
-
-    .mini-card.social-icon-only {
-        @apply w-9 h-9 p-0 flex items-center justify-center;
-    }
-
-    .hover-linkedin:hover {
-        @apply border-blue-400 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-[0_8px_18px_-14px_rgba(59,130,246,0.8)];
-    }
-
-    .hover-github:hover {
-        @apply border-gray-600 dark:border-gray-400 bg-gray-50 dark:bg-gray-700/50 shadow-[0_8px_18px_-14px_rgba(0,0,0,0.5)];
-    }
-
-    .hover-facebook:hover {
-        @apply border-blue-600 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-[0_8px_18px_-14px_rgba(37,99,235,0.8)];
-    }
-
-    .hover-instagram:hover {
-        @apply border-pink-600 dark:border-pink-500 bg-pink-50 dark:bg-pink-900/20 shadow-[0_8px_18px_-14px_rgba(236,72,153,0.8)];
-    }
-
-    .hover-youtube:hover {
-        @apply border-red-600 dark:border-red-500 bg-red-50 dark:bg-red-900/20 shadow-[0_8px_18px_-14px_rgba(220,38,38,0.8)];
-    }
-
-    .bento-card {
-        @apply p-6 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm transition-all duration-200;
-    }
-
-    .section-header {
-        @apply text-xs font-bold uppercase text-gray-400 dark:text-gray-400 tracking-[0.2em] mb-4;
-    }
-
-    .inner-item-card {
-        @apply p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200;
-    }
-
-    .project-item {
-        @apply cursor-pointer;
-    }
-
-    .project-title-link {
-        @apply no-underline;
-    }
-
-    .tech-badge {
-        @apply inline-block px-2 py-1 text-xs font-medium rounded border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200;
-    }
-
-    .icon-bw {
-        @apply filter dark:invert;
-    }
+@layer base {
+  html {
+    scroll-behavior: auto;
+  }
+  body {
+    @apply bg-[#f0f0ea] dark:bg-[#111111] text-[#222222] dark:text-[#e0e0e0] font-sans antialiased selection:bg-black/10 dark:selection:bg-white/30 selection:text-black dark:selection:text-white overflow-x-hidden transition-colors duration-500;
+  }
 }
 
-body {
-    @apply transition-colors;
+@layer components {
+  .timeline-container {
+    @apply relative border-l border-black/10 dark:border-white/10 ml-4 pl-8 pb-12 transition-colors duration-500;
+  }
+  
+  .timeline-icon {
+    @apply absolute -left-[17px] top-0 w-8 h-8 rounded-full bg-[#f0f0ea] dark:bg-[#111111] border border-black/10 dark:border-white/10 flex items-center justify-center p-0.5 transition-colors duration-500;
+  }
+
+  .timeline-icon-small {
+    @apply absolute -left-[13px] top-1 w-6 h-6 rounded-full bg-[#f0f0ea] dark:bg-[#111111] border border-black/10 dark:border-white/10 flex items-center justify-center p-1 transition-colors duration-500;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-2 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-white/[0.03] px-3 py-2 text-xs font-medium text-black/80 dark:text-white/80 hover:bg-black/[0.08] dark:hover:bg-white/[0.08] transition-colors cursor-pointer duration-500;
+  }
+
+  .tech-pill {
+    @apply inline-flex items-center rounded-full border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.02] px-3 py-1 text-[11px] text-black/70 dark:text-white/70 transition-colors duration-300 hover:bg-blue-500/10 hover:border-blue-500/30 hover:text-blue-600 dark:hover:bg-blue-500/20 dark:hover:border-blue-500/50 dark:hover:text-blue-400 cursor-default;
+  }
+
+  .section-title {
+    @apply text-sm font-bold text-black dark:text-white mb-6 lowercase transition-colors duration-500;
+  }
 }
