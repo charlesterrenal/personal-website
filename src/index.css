@@ -41,3 +41,15 @@
     @apply text-sm font-bold text-black dark:text-white mb-6 lowercase transition-colors duration-500;
   }
 }
+
+@media (pointer: fine) {
+  * {
+    cursor: url('/images/cursor.svg') 5 4, auto !important;
+  }
+  a, button, .pill, [role="button"], input[type="submit"], input[type="button"], input[type="reset"] {
+    cursor: url('/images/cursor-pointer.svg') 5 4, pointer !important;
+  }
+  a *, button *, .pill *, [role="button"] * {
+    cursor: url('/images/cursor-pointer.svg') 5 4, pointer !important;
+  }
+}

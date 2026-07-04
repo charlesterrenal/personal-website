@@ -1,14 +1,45 @@
 import { useEffect, useState, useRef } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
-import { motion } from "framer-motion";
-import { Link2, Github, Linkedin, ExternalLink, Mail, Smartphone, ChevronLeft, ChevronRight, Moon, Sun, Instagram, Facebook } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link2, Github, Linkedin, ExternalLink, Mail, Smartphone, ChevronLeft, ChevronRight, Moon, Sun, Instagram, Facebook, X } from "lucide-react";
 
 function App() {
   const [init, setInit] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
+  const [expandedImage, setExpandedImage] = useState(null);
   const smarth2woRef = useRef(null);
   const ahhsRef = useRef(null);
+
+  const [scrollStates, setScrollStates] = useState({
+    smarth2wo: { canScrollLeft: false, canScrollRight: true },
+    ahhs: { canScrollLeft: false, canScrollRight: true }
+  });
+
+  const checkScroll = (ref, key) => {
+    if (ref.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = ref.current;
+      setScrollStates(prev => ({
+        ...prev,
+        [key]: {
+          canScrollLeft: scrollLeft > 5,
+          canScrollRight: Math.ceil(scrollLeft + clientWidth) < scrollWidth - 5
+        }
+      }));
+    }
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      checkScroll(smarth2woRef, 'smarth2wo');
+      checkScroll(ahhsRef, 'ahhs');
+    };
+    
+    // Check initial layout after a brief render delay
+    setTimeout(handleResize, 100);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (darkMode) {
@@ -165,8 +196,11 @@ function App() {
           className="mb-16"
         >
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mb-8 text-center sm:text-left">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shrink-0 bg-[#e2e2dc] dark:bg-[#1a1a1a] transition-colors duration-500">
-              <img src="images/linkedin-picture.png" alt="Charles Terrenal" className="w-full h-full object-cover" />
+            <div 
+              onClick={() => setExpandedImage("images/linkedin-picture.png")}
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shrink-0 bg-[#e2e2dc] dark:bg-[#1a1a1a] transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-black/20 dark:hover:shadow-white/20 cursor-pointer group"
+            >
+              <img src="images/linkedin-picture.png" alt="Charles Terrenal" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
             </div>
             <div className="pt-0 sm:pt-2 flex flex-col items-center sm:items-start">
               <h1 className="text-xl sm:text-2xl font-bold text-black dark:text-white mb-2 lowercase tracking-tight transition-colors duration-500">charles vincent terrenal</h1>
@@ -344,35 +378,45 @@ function App() {
               </h3>
               
               <div className="relative group/carousel">
-                <button 
-                  onClick={() => scroll('left', smarth2woRef)}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/60 dark:bg-black/60 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover/carousel:opacity-100 backdrop-blur-sm shadow-sm"
-                  aria-label="Scroll left"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
+                <AnimatePresence>
+                  {scrollStates.smarth2wo.canScrollLeft && (
+                    <motion.button 
+                      initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
+                      onClick={() => scroll('left', smarth2woRef)}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/60 dark:bg-black/60 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-black transition-all md:opacity-0 group-hover/carousel:opacity-100 backdrop-blur-sm shadow-sm"
+                      aria-label="Scroll left"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </motion.button>
+                  )}
+                </AnimatePresence>
 
-                <div ref={smarth2woRef} className="flex gap-4 overflow-x-auto snap-x snap-mandatory mb-4 pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                <div ref={smarth2woRef} onScroll={() => checkScroll(smarth2woRef, 'smarth2wo')} className="flex gap-4 overflow-x-auto snap-x snap-mandatory mb-4 pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                   <style>{`div::-webkit-scrollbar { display: none; }`}</style>
-                  <div className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500">
+                  <div onClick={() => setExpandedImage(darkMode ? "images/smarth2wo-landing.png" : "images/smarth2wo-landing-light.png")} className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500">
                     <img src={darkMode ? "images/smarth2wo-landing.png" : "images/smarth2wo-landing-light.png"} alt="SmartH2wo Landing Page" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
                     <div className="hidden absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent z-0" />
                     <span className="hidden text-black/30 dark:text-white/30 text-[10px] z-10 group-hover:scale-105 transition-transform tracking-widest uppercase">landing image missing</span>
                   </div>
-                  <div className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500">
+                  <div onClick={() => setExpandedImage(darkMode ? "images/smarth2wo-dashboard.png" : "images/smarth2wo-dashboard-light.png")} className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500">
                     <img src={darkMode ? "images/smarth2wo-dashboard.png" : "images/smarth2wo-dashboard-light.png"} alt="SmartH2wo Dashboard" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
                     <div className="hidden absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent z-0" />
                     <span className="hidden text-black/30 dark:text-white/30 text-[10px] z-10 group-hover:scale-105 transition-transform tracking-widest uppercase">dashboard image missing</span>
                   </div>
                 </div>
 
-                <button 
-                  onClick={() => scroll('right', smarth2woRef)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/60 dark:bg-black/60 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover/carousel:opacity-100 backdrop-blur-sm shadow-sm"
-                  aria-label="Scroll right"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
+                <AnimatePresence>
+                  {scrollStates.smarth2wo.canScrollRight && (
+                    <motion.button 
+                      initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
+                      onClick={() => scroll('right', smarth2woRef)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/60 dark:bg-black/60 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-black transition-all md:opacity-0 group-hover/carousel:opacity-100 backdrop-blur-sm shadow-sm"
+                      aria-label="Scroll right"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </motion.button>
+                  )}
+                </AnimatePresence>
               </div>
               
               <div className="flex flex-wrap gap-2 mb-4">
@@ -411,35 +455,45 @@ function App() {
               </h3>
               
               <div className="relative group/carousel">
-                <button 
-                  onClick={() => scroll('left', ahhsRef)}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/60 dark:bg-black/60 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover/carousel:opacity-100 backdrop-blur-sm shadow-sm"
-                  aria-label="Scroll left"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
+                <AnimatePresence>
+                  {scrollStates.ahhs.canScrollLeft && (
+                    <motion.button 
+                      initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
+                      onClick={() => scroll('left', ahhsRef)}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/60 dark:bg-black/60 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-black transition-all md:opacity-0 group-hover/carousel:opacity-100 backdrop-blur-sm shadow-sm"
+                      aria-label="Scroll left"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </motion.button>
+                  )}
+                </AnimatePresence>
 
-                <div ref={ahhsRef} className="flex gap-4 overflow-x-auto snap-x snap-mandatory mb-4 pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                <div ref={ahhsRef} onScroll={() => checkScroll(ahhsRef, 'ahhs')} className="flex gap-4 overflow-x-auto snap-x snap-mandatory mb-4 pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                   <style>{`div::-webkit-scrollbar { display: none; }`}</style>
-                  <div className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500">
+                  <div onClick={() => setExpandedImage("images/ahhs-terminal.png")} className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500">
                     <img src="images/ahhs-terminal.png" alt="AHHS Terminal" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
                     <div className="hidden absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent z-0" />
                     <span className="hidden text-black/30 dark:text-white/30 text-[10px] z-10 group-hover:scale-105 transition-transform tracking-widest uppercase">terminal missing</span>
                   </div>
-                  <div className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500">
+                  <div onClick={() => setExpandedImage("images/ahhs-proxmox.png")} className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500">
                     <img src="images/ahhs-proxmox.png" alt="AHHS Proxmox Dashboard" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
                     <div className="hidden absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent z-0" />
                     <span className="hidden text-black/30 dark:text-white/30 text-[10px] z-10 group-hover:scale-105 transition-transform tracking-widest uppercase">proxmox missing</span>
                   </div>
                 </div>
 
-                <button 
-                  onClick={() => scroll('right', ahhsRef)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/60 dark:bg-black/60 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover/carousel:opacity-100 backdrop-blur-sm shadow-sm"
-                  aria-label="Scroll right"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
+                <AnimatePresence>
+                  {scrollStates.ahhs.canScrollRight && (
+                    <motion.button 
+                      initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
+                      onClick={() => scroll('right', ahhsRef)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/60 dark:bg-black/60 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-black transition-all md:opacity-0 group-hover/carousel:opacity-100 backdrop-blur-sm shadow-sm"
+                      aria-label="Scroll right"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </motion.button>
+                  )}
+                </AnimatePresence>
               </div>
               
               <div className="flex flex-wrap gap-2 mb-4">
@@ -496,6 +550,33 @@ function App() {
           <span>self-hosted</span>
         </footer>
       </div>
+
+      {/* Expanded Image Lightbox */}
+      <AnimatePresence>
+        {expandedImage && (
+          <motion.div 
+            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }} 
+            animate={{ opacity: 1, backdropFilter: 'blur(12px)' }} 
+            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            onClick={() => setExpandedImage(null)}
+            className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 p-4 sm:p-12 cursor-pointer"
+          >
+            <button className="absolute top-6 right-6 p-2 rounded-full bg-white/10 text-white/70 hover:bg-white/20 hover:text-white transition-colors">
+              <X className="w-6 h-6" />
+            </button>
+            <motion.img 
+              initial={{ scale: 0.95, opacity: 0, y: 10 }} 
+              animate={{ scale: 1, opacity: 1, y: 0 }} 
+              exit={{ scale: 0.95, opacity: 0, y: 10 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              src={expandedImage} 
+              alt="Expanded view"
+              className="max-w-full max-h-full rounded-2xl shadow-2xl object-contain ring-1 ring-white/10 cursor-default" 
+              onClick={(e) => e.stopPropagation()} // Prevent clicking image from closing it
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
