@@ -594,6 +594,7 @@ function App() {
                   </div>
                   <span className="font-medium">thanks for reaching out!</span>
                   <span className="opacity-60 mt-1">i'll get back to you shortly.</span>
+                  <span className="opacity-40 text-[10px] mt-4 px-4 leading-tight">if you don't receive a confirmation email, please check your spam folder.</span>
                 </motion.div>
               ) : (
                 <motion.form key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} onSubmit={handleFormSubmit} className="flex flex-col gap-3 relative z-10">
