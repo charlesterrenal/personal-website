@@ -11,6 +11,43 @@ function App() {
   const smarth2woRef = useRef(null);
   const ahhsRef = useRef(null);
 
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    company: '',
+    inquiryType: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
+
+  const handleFormChange = (e) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+    try {
+      const res = await fetch('https://n8n.charlesterrenal.com/webhook-test/61f81cd1-66f0-4c2a-903c-a7d3842a14d7', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', company: '', inquiryType: '', message: '' });
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const [scrollStates, setScrollStates] = useState({
     smarth2wo: { canScrollLeft: false, canScrollRight: true },
     ahhs: { canScrollLeft: false, canScrollRight: true }
@@ -224,7 +261,7 @@ function App() {
                 <div className="w-[1px] h-4 bg-black/10 dark:bg-white/10"></div>
                 
                 <div className="flex items-center gap-4">
-                  <a href="https://instagram.com/charlesterrenal" target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">
+                  <a href="https://www.instagram.com/charleiterrenal/" target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">
                     <Instagram className="w-4 h-4" />
                   </a>
                   <a href="https://www.facebook.com/charlesterrenal1/" target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">
@@ -540,6 +577,81 @@ function App() {
               </a>
             </div>
 
+          </div>
+
+          {/* Contact Form */}
+          <div className="mt-12 p-6 sm:p-8 bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 rounded-2xl border border-black/5 dark:border-white/5 transition-colors duration-500 relative overflow-hidden">
+            <h3 className="text-xl sm:text-2xl font-bold text-black dark:text-white mb-2 tracking-tight lowercase">
+              stop planning. <span className="text-emerald-600 dark:text-emerald-400">start building.</span>
+            </h3>
+            <p className="text-sm text-black/60 dark:text-white/60 mb-6 lowercase max-w-lg">
+              fill out the form with your goals and preferred format. i'll review your inquiry and get back to you with a custom proposal.
+            </p>
+
+            {submitStatus === 'success' ? (
+              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-600 dark:text-emerald-400 text-sm lowercase flex flex-col items-center justify-center text-center h-[350px]">
+                <div className="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center mb-4">
+                  <div className="w-2 h-4 border-b-2 border-r-2 border-emerald-500 transform rotate-45 mb-1" />
+                </div>
+                <span className="font-medium">thanks for reaching out!</span>
+                <span className="opacity-80 mt-1">i'll get back to you shortly.</span>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleFormSubmit} className="flex flex-col gap-3 relative z-10">
+                <input 
+                  type="text" name="name" required placeholder="full name" 
+                  value={formData.name} onChange={handleFormChange}
+                  className="w-full bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase"
+                />
+                
+                <input 
+                  type="email" name="email" required placeholder="email" 
+                  value={formData.email} onChange={handleFormChange}
+                  className="w-full bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase"
+                />
+
+                <input 
+                  type="text" name="company" placeholder="company / organization" 
+                  value={formData.company} onChange={handleFormChange}
+                  className="w-full bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase"
+                />
+
+                <div className="relative">
+                  <select 
+                    name="inquiryType" required 
+                    value={formData.inquiryType} onChange={handleFormChange}
+                    className="w-full bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase appearance-none"
+                  >
+                    <option value="" disabled className="text-black/40 dark:text-white/40">select...</option>
+                    <option value="General Inquiry">general inquiry</option>
+                    <option value="Project Request">project request</option>
+                    <option value="Consulting">consulting</option>
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-black/40 dark:text-white/40">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </div>
+                </div>
+
+                <textarea 
+                  name="message" required placeholder="what are you hoping to get out of it?" 
+                  value={formData.message} onChange={handleFormChange} rows={4}
+                  className="w-full bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase resize-none"
+                />
+
+                {submitStatus === 'error' && (
+                  <p className="text-red-500 text-xs lowercase px-1 mt-1">something went wrong. please try again.</p>
+                )}
+
+                <button 
+                  type="submit" disabled={isSubmitting}
+                  className="w-full bg-emerald-600 dark:bg-emerald-500 text-white font-medium text-sm rounded-xl py-3 mt-2 hover:bg-emerald-700 dark:hover:bg-emerald-400 active:scale-[0.98] transition-all lowercase disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm shadow-emerald-900/20"
+                >
+                  {isSubmitting ? (
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : 'submit'}
+                </button>
+              </form>
+            )}
           </div>
 
         </motion.section>
