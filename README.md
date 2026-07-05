@@ -3,7 +3,7 @@
 Source code for my personal website hosted at [charlesterrenal.com](https://charlesterrenal.com). This project showcases my journey in computer engineering, networking, and systems administration.
 
 ## About
-A minimalist, self-hosted portfolio built to showcase my technical journey, projects, and professional background as a Network Engineer.
+A minimalist, self-hosted portfolio built to showcase my technical journey, projects, and professional background.
 
 ## Tech Stack
 * **Frontend:** React, Vite, Tailwind CSS, Framer Motion
