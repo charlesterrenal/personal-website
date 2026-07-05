@@ -29,11 +29,34 @@ function App() {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus(null);
+
+    const now = new Date();
+    const phDate = new Intl.DateTimeFormat('en-PH', {
+      timeZone: 'Asia/Manila',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }).format(now);
+    
+    const phTime = new Intl.DateTimeFormat('en-PH', {
+      timeZone: 'Asia/Manila',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    }).format(now);
+
+    const submissionData = {
+      ...formData,
+      id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15),
+      submittedDate: phDate,
+      submittedTime: phTime
+    };
+
     try {
       const res = await fetch('https://n8n.charlesterrenal.com/webhook-test/61f81cd1-66f0-4c2a-903c-a7d3842a14d7', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(submissionData)
       });
       if (res.ok) {
         setSubmitStatus('success');
@@ -554,73 +577,47 @@ function App() {
 
         {/* Let's Work Together Section */}
         <motion.section id="contact" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} className="mb-12 scroll-mt-24">
-          <h2 className="section-title mb-8">let's work together</h2>
-          <div className="flex flex-col gap-4">
-            
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 group">
-              <div className="flex items-center gap-3 text-black/60 dark:text-white/60 group-hover:text-black dark:group-hover:text-white transition-colors">
-                <Mail className="w-4 h-4" />
-                <span className="text-sm lowercase">email</span>
-              </div>
-              <a href="mailto:contact@charlesterrenal.com" className="text-sm text-black/50 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors lowercase">
-                contact@charlesterrenal.com
-              </a>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 group">
-              <div className="flex items-center gap-3 text-black/60 dark:text-white/60 group-hover:text-black dark:group-hover:text-white transition-colors">
-                <Linkedin className="w-4 h-4" />
-                <span className="text-sm lowercase">linkedin</span>
-              </div>
-              <a href="https://linkedin.com/in/charlesterrenal" target="_blank" rel="noreferrer" className="text-sm text-black/50 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors lowercase">
-                charlesterrenal
-              </a>
-            </div>
-
-          </div>
+          <h2 className="section-title mb-6">let's work together</h2>
 
           {/* Contact Form */}
-          <div className="mt-12 p-6 sm:p-8 bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 rounded-2xl border border-black/5 dark:border-white/5 transition-colors duration-500 relative overflow-hidden">
-            <h3 className="text-xl sm:text-2xl font-bold text-black dark:text-white mb-2 tracking-tight lowercase">
-              stop planning. <span className="text-emerald-600 dark:text-emerald-400">start building.</span>
-            </h3>
+          <div className="transition-colors duration-500 relative overflow-hidden">
             <p className="text-sm text-black/60 dark:text-white/60 mb-6 lowercase max-w-lg">
               fill out the form with your goals and preferred format. i'll review your inquiry and get back to you with a custom proposal.
             </p>
 
             {submitStatus === 'success' ? (
-              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-600 dark:text-emerald-400 text-sm lowercase flex flex-col items-center justify-center text-center h-[350px]">
-                <div className="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center mb-4">
-                  <div className="w-2 h-4 border-b-2 border-r-2 border-emerald-500 transform rotate-45 mb-1" />
+              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="py-12 bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 rounded-xl text-black dark:text-white text-sm lowercase flex flex-col items-center justify-center text-center">
+                <div className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-full flex items-center justify-center mb-4">
+                  <div className="w-2 h-4 border-b-2 border-r-2 border-black dark:border-white transform rotate-45 mb-1" />
                 </div>
                 <span className="font-medium">thanks for reaching out!</span>
-                <span className="opacity-80 mt-1">i'll get back to you shortly.</span>
+                <span className="opacity-60 mt-1">i'll get back to you shortly.</span>
               </motion.div>
             ) : (
               <form onSubmit={handleFormSubmit} className="flex flex-col gap-3 relative z-10">
                 <input 
                   type="text" name="name" required placeholder="full name" 
                   value={formData.name} onChange={handleFormChange}
-                  className="w-full bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase"
+                  className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase"
                 />
                 
                 <input 
                   type="email" name="email" required placeholder="email" 
                   value={formData.email} onChange={handleFormChange}
-                  className="w-full bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase"
+                  className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase"
                 />
 
                 <input 
                   type="text" name="company" placeholder="company / organization" 
                   value={formData.company} onChange={handleFormChange}
-                  className="w-full bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase"
+                  className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase"
                 />
 
                 <div className="relative">
                   <select 
                     name="inquiryType" required 
                     value={formData.inquiryType} onChange={handleFormChange}
-                    className="w-full bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase appearance-none"
+                    className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase appearance-none"
                   >
                     <option value="" disabled className="text-black/40 dark:text-white/40">select...</option>
                     <option value="General Inquiry">general inquiry</option>
@@ -634,8 +631,8 @@ function App() {
 
                 <textarea 
                   name="message" required placeholder="what are you hoping to get out of it?" 
-                  value={formData.message} onChange={handleFormChange} rows={4}
-                  className="w-full bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase resize-none"
+                  value={formData.message} onChange={handleFormChange} rows={3}
+                  className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors lowercase resize-none"
                 />
 
                 {submitStatus === 'error' && (
@@ -644,10 +641,10 @@ function App() {
 
                 <button 
                   type="submit" disabled={isSubmitting}
-                  className="w-full bg-emerald-600 dark:bg-emerald-500 text-white font-medium text-sm rounded-xl py-3 mt-2 hover:bg-emerald-700 dark:hover:bg-emerald-400 active:scale-[0.98] transition-all lowercase disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm shadow-emerald-900/20"
+                  className="w-full bg-black dark:bg-white text-white dark:text-black font-medium text-sm rounded-xl py-2.5 mt-2 hover:bg-black/90 dark:hover:bg-white/90 active:scale-[0.98] transition-all lowercase disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                   ) : 'submit'}
                 </button>
               </form>
