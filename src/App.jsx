@@ -61,6 +61,7 @@ function App() {
       if (res.ok) {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', company: '', inquiryType: '', message: '' });
+        setTimeout(() => setSubmitStatus(null), 5000);
       } else {
         setSubmitStatus('error');
       }
