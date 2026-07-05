@@ -586,16 +586,17 @@ function App() {
               fill out the form with your goals and preferred format. i'll review your inquiry and get back to you with a custom proposal.
             </p>
 
-            {submitStatus === 'success' ? (
-              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="py-12 bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 rounded-xl text-black dark:text-white text-sm lowercase flex flex-col items-center justify-center text-center">
-                <div className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-full flex items-center justify-center mb-4">
-                  <div className="w-2 h-4 border-b-2 border-r-2 border-black dark:border-white transform rotate-45 mb-1" />
-                </div>
-                <span className="font-medium">thanks for reaching out!</span>
-                <span className="opacity-60 mt-1">i'll get back to you shortly.</span>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleFormSubmit} className="flex flex-col gap-3 relative z-10">
+            <AnimatePresence mode="wait">
+              {submitStatus === 'success' ? (
+                <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="py-12 bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 rounded-xl text-black dark:text-white text-sm lowercase flex flex-col items-center justify-center text-center">
+                  <div className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-full flex items-center justify-center mb-4">
+                    <div className="w-2 h-4 border-b-2 border-r-2 border-black dark:border-white transform rotate-45 mb-1" />
+                  </div>
+                  <span className="font-medium">thanks for reaching out!</span>
+                  <span className="opacity-60 mt-1">i'll get back to you shortly.</span>
+                </motion.div>
+              ) : (
+                <motion.form key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} onSubmit={handleFormSubmit} className="flex flex-col gap-3 relative z-10">
                 <input 
                   type="text" name="name" required placeholder="full name" 
                   value={formData.name} onChange={handleFormChange}
@@ -648,8 +649,9 @@ function App() {
                     <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                   ) : 'submit'}
                 </button>
-              </form>
+              </motion.form>
             )}
+            </AnimatePresence>
           </div>
 
         </motion.section>
