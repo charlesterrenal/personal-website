@@ -53,7 +53,7 @@ function App() {
     };
 
     try {
-      const res = await fetch('https://n8n.charlesterrenal.com/webhook-test/61f81cd1-66f0-4c2a-903c-a7d3842a14d7', {
+      const res = await fetch('https://n8n.charlesterrenal.com/webhook/61f81cd1-66f0-4c2a-903c-a7d3842a14d7', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submissionData)
