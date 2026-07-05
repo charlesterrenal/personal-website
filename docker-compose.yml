@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   portfolio:
     image: ghcr.io/charlesterrenal/personal-website:latest
