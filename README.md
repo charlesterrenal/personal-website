@@ -1,23 +1,21 @@
 # Portfolio Website
-Welcome to the source code for my personal website, hosted at **[charlesterrenal.com](https://charlesterrenal.com)**. 
-This project showcases my journey in computer engineering, networking, and systems administration.
 
----
+Source code for my personal website hosted at [charlesterrenal.com](https://charlesterrenal.com). This project showcases my journey in computer engineering, networking, and systems administration.
 
 ## About
-A minimalist, self-hosted portfolio built to showcase my technical journey, projects, and professional background as an aspiring **Network Engineer**.
+A minimalist, self-hosted portfolio built to showcase my technical journey, projects, and professional background as a Network Engineer.
 
-## Technical Stack:
-* **Frontend:** React, Tailwind CSS, tsParticles, Framer Motion
-* **Deployment:** Cloudflare, Nginx Proxy Manager
-* **Environment:** Developed and managed on [**AHHS** (A Humble Home Server)](https://github.com/charlesterrenal/ahhs).
+## Tech Stack
+* **Frontend:** React, Vite, Tailwind CSS, Framer Motion
+* **Backend & Automation:** n8n (Webhook-based Contact Form), Google Sheets
+* **Deployment:** Docker, Nginx, GitHub Actions (CI/CD)
+* **Environment:** Developed and managed on [AHHS (A Humble Home Server)](https://github.com/charlesterrenal/ahhs).
 
 ## Project Structure
-* `public/images`: Images, resumes, and static files.
-* `src/App.jsx`: The main React application component.
-* `index.html`: The Vite entry point.
-
----
+* `images/`: Static images and resume files.
+* `src/`: React application source code and styling.
+* `.github/workflows/`: GitHub Actions CI/CD pipelines.
+* `docker-compose.yml` & `Dockerfile`: Container configurations.
 
 ## Contact
 * **Website:** [charlesterrenal.com](https://charlesterrenal.com)
@@ -25,4 +23,4 @@ A minimalist, self-hosted portfolio built to showcase my technical journey, proj
 * **Email:** contact@charlesterrenal.com
 
 ---
-*Last updated: July 2026*
+Last updated: July 2026
