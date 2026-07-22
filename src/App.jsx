@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 import { motion, AnimatePresence } from "framer-motion";
@@ -154,7 +154,7 @@ function App() {
     });
   }, []);
 
-  const particlesOptions = {
+  const particlesOptions = useMemo(() => ({
     background: {
       color: {
         value: "transparent",
@@ -215,7 +215,7 @@ function App() {
       },
     },
     detectRetina: true,
-  };
+  }), [darkMode]);
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
