@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 import { motion, AnimatePresence } from "framer-motion";
+import { Turnstile } from '@marsidev/react-turnstile';
 import { Link2, Github, Linkedin, ExternalLink, Mail, Smartphone, ChevronLeft, ChevronRight, Moon, Sun, Instagram, Facebook, X } from "lucide-react";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [cfToken, setCfToken] = useState(null);
 
   const handleFormChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -49,7 +51,8 @@ function App() {
       ...formData,
       id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15),
       submittedDate: phDate,
-      submittedTime: phTime
+      submittedTime: phTime,
+      cfToken: cfToken
     };
 
     try {
@@ -642,8 +645,16 @@ function App() {
                   <p className="text-red-500 text-xs lowercase px-1 mt-1">something went wrong. please try again.</p>
                 )}
 
+                <div className="flex justify-center my-2">
+                  <Turnstile
+                    siteKey="0x4AAAAAAD7QAbgaqffQNNkX"
+                    onSuccess={(token) => setCfToken(token)}
+                    options={{ theme: darkMode ? 'dark' : 'light' }}
+                  />
+                </div>
+
                 <button 
-                  type="submit" disabled={isSubmitting}
+                  type="submit" disabled={isSubmitting || !cfToken}
                   className="w-full bg-black dark:bg-white text-white dark:text-black font-medium text-sm rounded-xl py-2.5 mt-2 hover:bg-black/90 dark:hover:bg-white/90 active:scale-[0.98] transition-all lowercase disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
