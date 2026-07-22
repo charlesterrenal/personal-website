@@ -1,9 +1,11 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo, memo } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 import { motion, AnimatePresence } from "framer-motion";
 import { Turnstile } from '@marsidev/react-turnstile';
 import { Link2, Github, Linkedin, ExternalLink, Mail, Smartphone, ChevronLeft, ChevronRight, Moon, Sun, Instagram, Facebook, X } from "lucide-react";
+
+const MemoizedParticles = memo(Particles);
 
 function App() {
   const [init, setInit] = useState(false);
@@ -244,7 +246,7 @@ function App() {
 
       {/* Interactive Background */}
       {init && (
-        <Particles
+        <MemoizedParticles
           id="tsparticles"
           options={particlesOptions}
           className="absolute inset-0 z-0 opacity-40 transition-opacity duration-500"
