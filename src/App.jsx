@@ -9,6 +9,7 @@ const MemoizedParticles = memo(Particles);
 
 function App() {
   const [init, setInit] = useState(false);
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const [darkMode, setDarkMode] = useState(true);
   const [expandedImage, setExpandedImage] = useState(null);
   const smarth2woRef = useRef(null);
@@ -66,7 +67,7 @@ function App() {
       if (res.ok) {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', company: '', inquiryType: '', message: '' });
-        setTimeout(() => setSubmitStatus(null), 5000);
+        setTimeout(() => setSubmitStatus(null), 10000);
       } else {
         setSubmitStatus('error');
       }
@@ -226,9 +227,12 @@ function App() {
 
   return (
     <div className="relative min-h-screen bg-[#f0f0ea] dark:bg-[#111111] text-[#222222] dark:text-[#e0e0e0] font-sans selection:bg-black/10 dark:selection:bg-white/20 transition-colors duration-500">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[999] focus:px-4 focus:py-2 focus:bg-black focus:text-white focus:rounded-lg focus:text-sm focus:font-medium">
+        Skip to main content
+      </a>
       
       {/* Floating Navbar */}
-      <nav className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-50 bg-white/40 dark:bg-black/40 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full px-4 sm:px-6 py-2 sm:py-2.5 flex items-center gap-3 sm:gap-6 shadow-sm transition-colors duration-500 w-[90%] sm:w-auto max-w-fit justify-center">
+      <nav aria-label="Primary navigation" className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-50 bg-white/40 dark:bg-black/40 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full px-4 sm:px-6 py-2 sm:py-2.5 flex items-center gap-3 sm:gap-6 shadow-sm transition-colors duration-500 w-[90%] sm:w-auto max-w-fit justify-center">
         <a href="#about" onClick={(e) => scrollToSection(e, 'about')} className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">about</a>
         <a href="#experiences" onClick={(e) => scrollToSection(e, 'experiences')} className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">experiences</a>
         <a href="#projects" onClick={(e) => scrollToSection(e, 'projects')} className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">projects</a>
@@ -245,7 +249,7 @@ function App() {
       </button>
 
       {/* Interactive Background */}
-      {init && (
+      {init && !prefersReducedMotion && (
         <MemoizedParticles
           id="tsparticles"
           options={particlesOptions}
@@ -254,7 +258,7 @@ function App() {
       )}
 
       {/* Main Content Container */}
-      <div className="relative z-10 max-w-2xl mx-auto px-6 py-24">
+      <main id="main-content" className="relative z-10 max-w-2xl mx-auto px-6 py-24">
         
         {/* Header Section */}
         <motion.header 
@@ -262,12 +266,13 @@ function App() {
           className="mb-16"
         >
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mb-8 text-center sm:text-left">
-            <div 
+            <button 
               onClick={() => setExpandedImage("images/linkedin-picture.png")}
-              className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shrink-0 bg-[#e2e2dc] dark:bg-[#1a1a1a] transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-black/20 dark:hover:shadow-white/20 cursor-pointer group"
+              aria-label="View profile photo"
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shrink-0 bg-[#e2e2dc] dark:bg-[#1a1a1a] transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-black/20 dark:hover:shadow-white/20 cursor-pointer group p-0 block"
             >
               <img src="images/linkedin-picture.png" alt="Charles Terrenal" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-            </div>
+            </button>
             <div className="pt-0 sm:pt-2 flex flex-col items-center sm:items-start">
               <h1 className="text-xl sm:text-2xl font-bold text-black dark:text-white mb-2 lowercase tracking-tight transition-colors duration-500">charles vincent terrenal</h1>
               <p className="text-[13px] sm:text-sm text-black/60 dark:text-white/60 mb-4 leading-relaxed lowercase transition-colors duration-500">
@@ -276,25 +281,25 @@ function App() {
               </p>
               <div className="flex items-center justify-center sm:justify-start gap-3 sm:gap-4 text-black/50 dark:text-white/50 transition-colors duration-500 flex-wrap">
                 <div className="flex items-center gap-4">
-                  <a href="https://linkedin.com/in/charlesterrenal" target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">
-                    <Linkedin className="w-4 h-4" />
+                  <a href="https://linkedin.com/in/charlesterrenal" target="_blank" rel="noreferrer" aria-label="LinkedIn profile" className="p-1.5 -m-1.5 rounded hover:text-black dark:hover:text-white transition-colors">
+                    <Linkedin className="w-4 h-4" aria-hidden="true" />
                   </a>
-                  <a href="https://github.com/charlesterrenal" target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">
-                    <Github className="w-4 h-4" />
+                  <a href="https://github.com/charlesterrenal" target="_blank" rel="noreferrer" aria-label="GitHub profile" className="p-1.5 -m-1.5 rounded hover:text-black dark:hover:text-white transition-colors">
+                    <Github className="w-4 h-4" aria-hidden="true" />
                   </a>
-                  <a href="mailto:contact@charlesterrenal.com" className="hover:text-black dark:hover:text-white transition-colors">
-                    <Mail className="w-4 h-4" />
+                  <a href="mailto:contact@charlesterrenal.com" aria-label="Send email" className="p-1.5 -m-1.5 rounded hover:text-black dark:hover:text-white transition-colors">
+                    <Mail className="w-4 h-4" aria-hidden="true" />
                   </a>
                 </div>
                 
                 <div className="w-[1px] h-4 bg-black/10 dark:bg-white/10"></div>
                 
                 <div className="flex items-center gap-4">
-                  <a href="https://www.instagram.com/charleiterrenal/" target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">
-                    <Instagram className="w-4 h-4" />
+                  <a href="https://www.instagram.com/charleiterrenal/" target="_blank" rel="noreferrer" aria-label="Instagram profile" className="p-1.5 -m-1.5 rounded hover:text-black dark:hover:text-white transition-colors">
+                    <Instagram className="w-4 h-4" aria-hidden="true" />
                   </a>
-                  <a href="https://www.facebook.com/charlesterrenal1/" target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">
-                    <Facebook className="w-4 h-4" />
+                  <a href="https://www.facebook.com/charlesterrenal1/" target="_blank" rel="noreferrer" aria-label="Facebook profile" className="p-1.5 -m-1.5 rounded hover:text-black dark:hover:text-white transition-colors">
+                    <Facebook className="w-4 h-4" aria-hidden="true" />
                   </a>
                 </div>
               </div>
@@ -459,16 +464,16 @@ function App() {
 
                 <div ref={smarth2woRef} onScroll={() => checkScroll(smarth2woRef, 'smarth2wo')} className="flex gap-4 overflow-x-auto snap-x snap-mandatory mb-4 pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                   <style>{`div::-webkit-scrollbar { display: none; }`}</style>
-                  <div onClick={() => setExpandedImage(darkMode ? "images/smarth2wo-landing.png" : "images/smarth2wo-landing-light.png")} className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500">
+                  <button onClick={() => setExpandedImage(darkMode ? "images/smarth2wo-landing.png" : "images/smarth2wo-landing-light.png")} aria-label="View SmartH2wo Landing Page full size" className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500 p-0 block">
                     <img src={darkMode ? "images/smarth2wo-landing.png" : "images/smarth2wo-landing-light.png"} alt="SmartH2wo Landing Page" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
                     <div className="hidden absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent z-0" />
                     <span className="hidden text-black/30 dark:text-white/30 text-[10px] z-10 group-hover:scale-105 transition-transform tracking-widest uppercase">landing image missing</span>
-                  </div>
-                  <div onClick={() => setExpandedImage(darkMode ? "images/smarth2wo-dashboard.png" : "images/smarth2wo-dashboard-light.png")} className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500">
+                  </button>
+                  <button onClick={() => setExpandedImage(darkMode ? "images/smarth2wo-dashboard.png" : "images/smarth2wo-dashboard-light.png")} aria-label="View SmartH2wo Dashboard full size" className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500 p-0 block">
                     <img src={darkMode ? "images/smarth2wo-dashboard.png" : "images/smarth2wo-dashboard-light.png"} alt="SmartH2wo Dashboard" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
                     <div className="hidden absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent z-0" />
                     <span className="hidden text-black/30 dark:text-white/30 text-[10px] z-10 group-hover:scale-105 transition-transform tracking-widest uppercase">dashboard image missing</span>
-                  </div>
+                  </button>
                 </div>
 
                 <AnimatePresence>
@@ -511,12 +516,8 @@ function App() {
               <h3 className="text-[13px] font-medium text-black dark:text-white lowercase mb-4 flex items-center gap-2 transition-colors duration-500">
                 ahhs <span className="text-black/30 dark:text-white/30">—</span> a humble home server
                 <a href="https://github.com/charlesterrenal/ahhs" target="_blank" rel="noreferrer"><ExternalLink className="w-3 h-3 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white" /></a>
-                <a href="https://github.com/charlesterrenal/ahhs" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors ml-2 shadow-[0_0_10px_rgba(239,68,68,0.2)]">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]"></span>
-                  </span>
-                  <span className="text-[9px] font-bold tracking-wider uppercase drop-shadow-[0_0_2px_rgba(239,68,68,0.5)]">live</span>
+                <a href="https://github.com/charlesterrenal/ahhs" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-500 hover:bg-slate-500/20 transition-colors ml-2 shadow-none border border-slate-500/20">
+                  <span className="text-[9px] font-bold tracking-wider uppercase">source</span>
                 </a>
               </h3>
               
@@ -536,16 +537,16 @@ function App() {
 
                 <div ref={ahhsRef} onScroll={() => checkScroll(ahhsRef, 'ahhs')} className="flex gap-4 overflow-x-auto snap-x snap-mandatory mb-4 pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                   <style>{`div::-webkit-scrollbar { display: none; }`}</style>
-                  <div onClick={() => setExpandedImage("images/ahhs-terminal.png")} className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500">
+                  <button onClick={() => setExpandedImage("images/ahhs-terminal.png")} aria-label="View AHHS Terminal full size" className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500 p-0 block">
                     <img src="images/ahhs-terminal.png" alt="AHHS Terminal" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
                     <div className="hidden absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent z-0" />
                     <span className="hidden text-black/30 dark:text-white/30 text-[10px] z-10 group-hover:scale-105 transition-transform tracking-widest uppercase">terminal missing</span>
-                  </div>
-                  <div onClick={() => setExpandedImage("images/ahhs-proxmox.png")} className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500">
+                  </button>
+                  <button onClick={() => setExpandedImage("images/ahhs-proxmox.png")} aria-label="View AHHS Proxmox Dashboard full size" className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500 p-0 block">
                     <img src="images/ahhs-proxmox.png" alt="AHHS Proxmox Dashboard" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
                     <div className="hidden absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent z-0" />
                     <span className="hidden text-black/30 dark:text-white/30 text-[10px] z-10 group-hover:scale-105 transition-transform tracking-widest uppercase">proxmox missing</span>
-                  </div>
+                  </button>
                 </div>
 
                 <AnimatePresence>
@@ -600,32 +601,48 @@ function App() {
                   <span className="font-medium">thanks for reaching out!</span>
                   <span className="opacity-60 mt-1">i'll get back to you shortly.</span>
                   <span className="opacity-40 text-[10px] mt-4 px-4 leading-tight">if you don't receive a confirmation email, please check your spam folder.</span>
+                  <button onClick={() => setSubmitStatus(null)} className="mt-4 text-xs opacity-40 hover:opacity-70 underline" aria-label="Dismiss success message">dismiss</button>
                 </motion.div>
               ) : (
                 <motion.form key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} onSubmit={handleFormSubmit} className="flex flex-col gap-3 relative z-10">
-                <input 
-                  type="text" name="name" required placeholder="full name" 
-                  value={formData.name} onChange={handleFormChange}
-                  className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors"
-                />
+                <div aria-live="polite" aria-atomic="true" className="sr-only">
+                  {submitStatus === 'success' && 'Form submitted successfully. Thank you for reaching out!'}
+                  {submitStatus === 'error' && 'Form submission failed. Please try again.'}
+                </div>
                 
-                <input 
-                  type="email" name="email" required placeholder="email" 
-                  value={formData.email} onChange={handleFormChange}
-                  className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors"
-                />
+                <div>
+                  <label htmlFor="name" className="sr-only">Full Name</label>
+                  <input 
+                    id="name" type="text" name="name" required placeholder="full name" autoComplete="name"
+                    value={formData.name} onChange={handleFormChange}
+                    className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors"
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="email" className="sr-only">Email Address</label>
+                  <input 
+                    id="email" type="email" name="email" required placeholder="email" autoComplete="email"
+                    value={formData.email} onChange={handleFormChange}
+                    className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors"
+                  />
+                </div>
 
-                <input 
-                  type="text" name="company" placeholder="company / organization" 
-                  value={formData.company} onChange={handleFormChange}
-                  className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors"
-                />
+                <div>
+                  <label htmlFor="company" className="sr-only">Company or Organization (optional)</label>
+                  <input 
+                    id="company" type="text" name="company" placeholder="company / organization" autoComplete="organization"
+                    value={formData.company} onChange={handleFormChange}
+                    className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors"
+                  />
+                </div>
 
                 <div className="relative">
+                  <label htmlFor="inquiryType" className="sr-only">Inquiry Type</label>
                   <select 
-                    name="inquiryType" required 
+                    id="inquiryType" name="inquiryType" required 
                     value={formData.inquiryType} onChange={handleFormChange}
-                    className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors appearance-none"
+                    className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors appearance-none"
                   >
                     <option value="" disabled className="text-black/40 dark:text-white/40">select...</option>
                     <option value="General Inquiry">general inquiry</option>
@@ -637,14 +654,17 @@ function App() {
                   </div>
                 </div>
 
-                <textarea 
-                  name="message" required placeholder="what are you hoping to get out of it?" 
-                  value={formData.message} onChange={handleFormChange} rows={3}
-                  className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors resize-none"
-                />
+                <div>
+                  <label htmlFor="message" className="sr-only">Message</label>
+                  <textarea 
+                    id="message" name="message" required placeholder="what are you hoping to get out of it?" 
+                    value={formData.message} onChange={handleFormChange} rows={3}
+                    className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors"
+                  />
+                </div>
 
                 {submitStatus === 'error' && (
-                  <p className="text-red-500 text-xs lowercase px-1 mt-1">something went wrong. please try again.</p>
+                  <p role="alert" className="text-red-500 text-xs lowercase px-1 mt-1">something went wrong. please try again.</p>
                 )}
 
                 <div className="flex justify-center my-2">
@@ -675,7 +695,7 @@ function App() {
           <span>&copy; 2026 charles vincent terrenal</span>
           <span>self-hosted</span>
         </footer>
-      </div>
+      </main>
 
       {/* Expanded Image Lightbox */}
       <AnimatePresence>
@@ -685,10 +705,15 @@ function App() {
             animate={{ opacity: 1, backdropFilter: 'blur(12px)' }} 
             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
             onClick={() => setExpandedImage(null)}
+            onKeyDown={(e) => e.key === 'Escape' && setExpandedImage(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Image preview"
+            tabIndex={-1}
             className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 p-4 sm:p-12 cursor-pointer"
           >
-            <button className="absolute top-6 right-6 p-2 rounded-full bg-white/10 text-white/70 hover:bg-white/20 hover:text-white transition-colors">
-              <X className="w-6 h-6" />
+            <button aria-label="Close image preview" className="absolute top-6 right-6 p-2 rounded-full bg-white/10 text-white/70 hover:bg-white/20 hover:text-white transition-colors">
+              <X className="w-6 h-6" aria-hidden="true" />
             </button>
             <motion.img 
               initial={{ scale: 0.95, opacity: 0, y: 10 }} 
