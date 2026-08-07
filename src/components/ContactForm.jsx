@@ -73,6 +73,7 @@ const ContactForm = ({ darkMode }) => {
       if (res.ok) {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', company: '', inquiryType: '', message: '' });
+        setCfToken(null); // Clear the single-use token
         setTimeout(() => setSubmitStatus(null), 10000);
       } else {
         setSubmitStatus('error');
