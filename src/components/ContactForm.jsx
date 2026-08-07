@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Turnstile } from '@marsidev/react-turnstile';
 
@@ -13,6 +13,24 @@ const ContactForm = ({ darkMode }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [cfToken, setCfToken] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const inquiryOptions = [
+    { value: "General Inquiry", label: "general inquiry" },
+    { value: "Project Request", label: "project request" },
+    { value: "Consulting", label: "consulting" }
+  ];
 
   const handleFormChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -117,21 +135,45 @@ const ContactForm = ({ darkMode }) => {
             />
           </div>
 
-          <div className="relative">
+          <div className="relative z-20" ref={dropdownRef}>
             <label htmlFor="inquiryType" className="sr-only">Inquiry Type</label>
-            <select 
-              id="inquiryType" name="inquiryType" required 
-              value={formData.inquiryType} onChange={handleFormChange}
-              className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors appearance-none"
+            <button
+              type="button"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-full text-left bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors flex justify-between items-center"
             >
-              <option value="" disabled className="text-black/40 dark:text-white/40">select...</option>
-              <option value="General Inquiry">general inquiry</option>
-              <option value="Project Request">project request</option>
-              <option value="Consulting">consulting</option>
-            </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-black/40 dark:text-white/40">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </div>
+              <span className={formData.inquiryType ? "" : "text-black/40 dark:text-white/40"}>
+                {formData.inquiryType ? inquiryOptions.find(o => o.value === formData.inquiryType)?.label : "select..."}
+              </span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform duration-300 opacity-40 ${isDropdownOpen ? 'rotate-180' : ''}`}><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            
+            <AnimatePresence>
+              {isDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute w-full mt-2 bg-white dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-xl overflow-hidden shadow-2xl z-50 backdrop-blur-xl"
+                >
+                  {inquiryOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => {
+                        setFormData(prev => ({ ...prev, inquiryType: option.value }));
+                        setIsDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-black dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <input type="hidden" name="inquiryType" required value={formData.inquiryType} />
           </div>
 
           <div>
