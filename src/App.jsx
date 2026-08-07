@@ -88,11 +88,17 @@ function App() {
         >
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mb-8 text-center sm:text-left">
             <button 
-              onClick={() => setExpandedImage("images/linkedin-picture.png")}
+              onClick={() => setExpandedImage("images/linkedin-picture.webp")}
               aria-label="View profile photo"
               className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shrink-0 bg-[#e2e2dc] dark:bg-[#1a1a1a] transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-black/20 dark:hover:shadow-white/20 cursor-pointer group p-0 block"
             >
-              <img src="images/linkedin-picture.png" alt="Charles Terrenal" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              <img
+                src="images/linkedin-picture.webp"
+                alt="Charles Terrenal"
+                className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                width="128"
+                height="128"
+              />
             </button>
             <div className="pt-0 sm:pt-2 flex flex-col items-center sm:items-start">
               <h1 className="text-xl sm:text-2xl font-bold text-black dark:text-white mb-2 lowercase tracking-tight transition-colors duration-500">charles vincent terrenal</h1>
