@@ -26,25 +26,25 @@ Visit `http://localhost:3000`
 ### Step 1: Get the code on your server
 ```bash
 # Option A: Clone from git
-git clone <your-repo-url> /home/user/portfolio
-cd /home/user/portfolio
+git clone <your-repo-url> /path/to/project
+cd /path/to/project
 
 # Option B: Upload manually
-scp -r . user@your-server:/home/user/portfolio
+scp -r . user@your-server:/path/to/project
 ```
 
 ### Step 2: Deploy with Docker Compose
 ```bash
-cd /home/user/portfolio
+cd /path/to/project
 
 # Build and start the container
-docker-compose up -d --build
+docker compose up -d
 
 # Check logs
-docker-compose logs -f
+docker compose logs -f
 
 # Stop the container
-docker-compose down
+docker compose down
 ```
 
 ### Step 3: Set up Nginx as reverse proxy (recommended)
@@ -91,19 +91,41 @@ crontab -e
 
 ## Continuous Deployment Workflow
 
-### Quick update after code changes:
-```bash
-# From your local machine
-git push
+### Method 1: GitHub Actions CI/CD (Recommended)
 
-# On your server
-cd /home/user/portfolio
-git pull
-docker-compose up -d --build
-docker-compose logs -f
+When code is pushed to `main`, GitHub Actions automatically builds and publishes the production image to GitHub Container Registry (`ghcr.io`).
+
+On your server, pull the pre-built image and recreate the container:
+
+```bash
+# Navigate to the project directory where docker-compose.yml resides
+cd /path/to/project
+
+# Pull the latest image built by GitHub Actions
+docker compose pull
+
+# Recreate and start the container with the updated image
+docker compose up -d --force-recreate
+
+# (Optional) Clean up dangling images to free disk space
+docker image prune -f
 ```
 
-Or use the provided script:
+---
+
+### Method 2: Local Server Rebuild
+
+If you prefer building the Docker image directly on your host:
+
+```bash
+# On your server
+cd /path/to/project
+git pull
+docker compose up -d --build
+docker compose logs -f
+```
+
+Or use the provided deploy script:
 ```bash
 chmod +x deploy.sh
 ./deploy.sh restart
