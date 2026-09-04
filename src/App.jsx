@@ -87,24 +87,35 @@ function App() {
           className="mb-16"
         >
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mb-8 text-center sm:text-left">
-            <button 
-              onClick={() => setExpandedImage("images/linkedin-picture.webp")}
-              aria-label="View profile photo"
-              className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shrink-0 bg-[#e2e2dc] dark:bg-[#1a1a1a] transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-black/20 dark:hover:shadow-white/20 cursor-pointer group p-0 block"
-            >
-              <img
-                src="images/linkedin-picture.webp"
-                alt="Charles Terrenal"
-                className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
-                width="128"
-                height="128"
-              />
-            </button>
+            <div className="relative group">
+              {/* Subtle ambient blur glow behind avatar */}
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-emerald-500/20 blur-md opacity-40 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+              
+              <button 
+                onClick={() => setExpandedImage("images/linkedin-picture.webp")}
+                aria-label="View profile photo"
+                className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border border-black/15 dark:border-white/15 shrink-0 bg-[#e2e2dc] dark:bg-[#1a1a1a] transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:border-black/30 dark:hover:border-white/30 cursor-pointer block p-0 ring-1 ring-black/5 dark:ring-white/10"
+              >
+                <img
+                  src="images/linkedin-picture.webp"
+                  alt="Charles Terrenal"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  width="128"
+                  height="128"
+                />
+                
+                {/* Diagonal light sheen overlay effect on hover */}
+                <div 
+                  className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" 
+                  aria-hidden="true" 
+                />
+              </button>
+            </div>
             <div className="pt-0 sm:pt-2 flex flex-col items-center sm:items-start">
               <h1 className="text-xl sm:text-2xl font-bold text-black dark:text-white mb-2 lowercase tracking-tight transition-colors duration-500">charles vincent terrenal</h1>
               <p className="text-[13px] sm:text-sm text-black/60 dark:text-white/60 mb-4 leading-relaxed lowercase transition-colors duration-500">
-                junior computer engineering technology student at pup<br className="hidden sm:block" />
-                <span className="sm:hidden">, </span>aspiring to be a network and cloud engineer.
+                computer engineering student at pup.<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>aspiring to be a network engineer and a leader in tech.
               </p>
               <div className="flex items-center justify-center sm:justify-start gap-3 sm:gap-4 text-black/50 dark:text-white/50 transition-colors duration-500 flex-wrap">
                 <div className="flex items-center gap-4">
@@ -134,12 +145,12 @@ function App() {
           </div>
 
           {/* Affiliations / Tools Pills */}
-          <div className="flex flex-row flex-wrap justify-center sm:justify-start gap-3 mb-10">
-            <a href="https://www.pup.edu.ph/itech/" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
+          <div className="flex flex-row flex-wrap sm:flex-nowrap justify-center sm:justify-start gap-2 sm:gap-2.5 mb-10">
+            <a href="https://www.pup.edu.ph/cea/" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
               <img src="images/pup-logo.png" alt="PUP" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
                 <span className="text-[10px] font-bold text-black dark:text-white leading-tight transition-colors duration-500">pup</span>
-                <span className="text-[9px] text-black/40 dark:text-white/40 leading-tight transition-colors duration-500">institute of technology</span>
+                <span className="text-[9px] text-black/40 dark:text-white/40 leading-tight transition-colors duration-500 whitespace-nowrap">college of engineering</span>
               </div>
             </a>
             <a href="https://stellarph.io" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
@@ -150,10 +161,17 @@ function App() {
               </div>
             </a>
             <a href="https://www.linkedin.com/company/cncp-mnl/" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
-              <img src="images/cncp-logo.png" alt="CNCP" className="w-5 h-5 rounded-md object-cover shrink-0" />
+              <img src="images/cncp-logo.jpg" alt="CNCP" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
                 <span className="text-[10px] font-bold text-black dark:text-white leading-tight transition-colors duration-500">cncp</span>
-                <span className="text-[9px] text-black/40 dark:text-white/40 leading-tight transition-colors duration-500">junior networking officer</span>
+                <span className="text-[9px] text-black/40 dark:text-white/40 leading-tight transition-colors duration-500 whitespace-nowrap">ent. networking</span>
+              </div>
+            </a>
+            <a href="https://www.facebook.com/ICPEP.SE.PUPManila" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
+              <img src="images/icpeppup-logo.png" alt="ICpEP.SE - PUP Manila" className="w-5 h-5 rounded-md object-cover shrink-0" />
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-black dark:text-white leading-tight transition-colors duration-500 whitespace-nowrap">icpep.se - pup manila</span>
+                <span className="text-[9px] text-black/40 dark:text-white/40 leading-tight transition-colors duration-500 whitespace-nowrap">avp internal</span>
               </div>
             </a>
           </div>
@@ -163,15 +181,15 @@ function App() {
         <motion.section id="about" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} className="mb-16 scroll-mt-24">
           <h2 className="section-title">about</h2>
           <p className="text-[13px] text-black/60 dark:text-white/60 leading-relaxed lowercase transition-colors duration-500 mb-8">
-            i'm a junior computer engineering technology student at pup sta. mesa with a passion for networking, cloud computing, and self-hosted environments.<br /><br />
-            i love exploring virtualization and automation through my homelab setup, where i get hands-on experience building and breaking things.<br /><br />
-            beyond my homelab, i'm highly active in the community and love participating in local tech events.
+            i'm a computer engineering student at pup sta. mesa with a passion for networking, cloud computing, and self-hosted environments.<br /><br />
+            i also love exploring virtualization and automation through my homelab setup, where i get hands-on experience building and breaking things.<br /><br />
+            beyond my homelab, i'm highly active in the tech community and love attending and volunteering in local tech events.
           </p>
         </motion.section>
 
         {/* Experiences Section - Lazy Loaded */}
         <Suspense fallback={<div className="h-48 animate-pulse bg-black/5 dark:bg-white/5 rounded-xl mb-16" />}>
-          <Experiences />
+          <Experiences setExpandedImage={setExpandedImage} />
         </Suspense>
 
         {/* Education / Certifications Section */}
