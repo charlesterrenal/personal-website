@@ -4,10 +4,12 @@ import { ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 
 const Projects = ({ darkMode, setExpandedImage }) => {
   const smarth2woRef = useRef(null);
+  const orbitRef = useRef(null);
   const ahhsRef = useRef(null);
   
   const [scrollStates, setScrollStates] = useState({
     smarth2wo: { canScrollLeft: false, canScrollRight: true },
+    orbit: { canScrollLeft: false, canScrollRight: true },
     ahhs: { canScrollLeft: false, canScrollRight: true }
   });
 
@@ -27,6 +29,7 @@ const Projects = ({ darkMode, setExpandedImage }) => {
   useEffect(() => {
     const handleResize = () => {
       checkScroll(smarth2woRef, 'smarth2wo');
+      checkScroll(orbitRef, 'orbit');
       checkScroll(ahhsRef, 'ahhs');
     };
     
@@ -132,7 +135,7 @@ const Projects = ({ darkMode, setExpandedImage }) => {
         </div>
 
         {/* Project 2: AHHS */}
-        <div className="timeline-container !border-transparent !pb-0">
+        <div className="timeline-container">
           <div className="timeline-icon-small">
             <div className="w-full h-full rounded-full bg-[#e2e2dc] dark:bg-[#1a1a1a] flex items-center justify-center text-[9px] font-bold text-black dark:text-white border border-black/10 dark:border-white/20 transition-colors duration-500">a</div>
           </div>
@@ -199,6 +202,86 @@ const Projects = ({ darkMode, setExpandedImage }) => {
             <li>centralized network storage using samba and nfs shares for fast local media streaming.</li>
             <li>reliable automated backup routines driven by custom bash scripts and cron jobs.</li>
             <li>self-hosted services including a password manager, media server, vpn, and network-wide adblocking.</li>
+          </ul>
+        </div>
+
+        {/* Project 3: Orbit Dashboard */}
+        <div className="timeline-container !border-transparent !pb-0">
+          <div className="timeline-icon">
+            <img src="images/orbit-logo.png" alt="Orbit Dashboard Logo" className="w-full h-full rounded-full object-cover bg-[#e2e2dc] dark:bg-[#1a1a1a] transition-colors duration-500" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+            <div className="hidden w-full h-full rounded-full bg-[#e2e2dc] dark:bg-[#1a1a1a] items-center justify-center text-[9px] font-bold text-black dark:text-white border border-black/10 dark:border-white/20 transition-colors duration-500">O</div>
+          </div>
+          <h3 className="text-[13px] font-medium text-black dark:text-white lowercase mb-4 flex items-center gap-2 transition-colors duration-500">
+            orbit dashboard <span className="text-black/30 dark:text-white/30">—</span> homelab telemetry & command center
+            <a href="https://github.com/charlesterrenal/orbit-dashboard" target="_blank" rel="noreferrer"><ExternalLink className="w-3 h-3 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white" /></a>
+            <a href="https://github.com/charlesterrenal/orbit-dashboard" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-500 hover:bg-slate-500/20 transition-colors ml-2 shadow-none border border-slate-500/20">
+              <span className="text-[9px] font-bold tracking-wider uppercase">source</span>
+            </a>
+          </h3>
+          
+          <div className="relative group/carousel">
+            <AnimatePresence>
+              {scrollStates.orbit?.canScrollLeft && (
+                <motion.button 
+                  initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
+                  onClick={() => scroll('left', orbitRef)}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/60 dark:bg-black/60 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-black transition-all md:opacity-0 group-hover/carousel:opacity-100 backdrop-blur-sm shadow-sm"
+                  aria-label="Scroll left"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </motion.button>
+              )}
+            </AnimatePresence>
+
+            <div ref={orbitRef} onScroll={() => checkScroll(orbitRef, 'orbit')} className="flex gap-4 overflow-x-auto snap-x snap-mandatory mb-4 pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+              <button onClick={() => setExpandedImage(darkMode ? "images/orbit-dashboard-dark.png" : "images/orbit-dashboard-light.png")} aria-label="View Orbit Dashboard Overview full size" className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500 p-0 block">
+                <img src={darkMode ? "images/orbit-dashboard-dark.png" : "images/orbit-dashboard-light.png"} alt="Orbit Dashboard Overview" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+                <div className="hidden absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent z-0" />
+                <span className="hidden text-black/30 dark:text-white/30 text-[10px] z-10 group-hover:scale-105 transition-transform tracking-widest uppercase">overview missing</span>
+              </button>
+              <button onClick={() => setExpandedImage("images/orbit-dashboard-services.png")} aria-label="View Orbit Services Directory full size" className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500 p-0 block">
+                <img src="images/orbit-dashboard-services.png" alt="Orbit Services Directory" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+                <div className="hidden absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent z-0" />
+                <span className="hidden text-black/30 dark:text-white/30 text-[10px] z-10 group-hover:scale-105 transition-transform tracking-widest uppercase">services missing</span>
+              </button>
+              <button onClick={() => setExpandedImage("images/orbit-dashboard-containers.png")} aria-label="View Orbit Containers Overview full size" className="w-[85%] sm:w-[90%] shrink-0 snap-center aspect-[16/9] rounded-xl bg-[#e2e2dc] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-black/20 dark:hover:border-white/20 duration-500 p-0 block">
+                <img src="images/orbit-dashboard-containers.png" alt="Orbit Docker Containers Overview" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+                <div className="hidden absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent z-0" />
+                <span className="hidden text-black/30 dark:text-white/30 text-[10px] z-10 group-hover:scale-105 transition-transform tracking-widest uppercase">containers missing</span>
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {scrollStates.orbit?.canScrollRight && (
+                <motion.button 
+                  initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
+                  onClick={() => scroll('right', orbitRef)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/60 dark:bg-black/60 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-black transition-all md:opacity-0 group-hover/carousel:opacity-100 backdrop-blur-sm shadow-sm"
+                  aria-label="Scroll right"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </motion.button>
+              )}
+            </AnimatePresence>
+          </div>
+          
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="tech-pill">react 19</span>
+            <span className="tech-pill">vite</span>
+            <span className="tech-pill">nginx</span>
+            <span className="tech-pill">proxmox api</span>
+            <span className="tech-pill">docker / portainer</span>
+            <span className="tech-pill">tailscale api</span>
+            <span className="tech-pill">uptime kuma</span>
+          </div>
+          <ul className="text-[11px] text-black/60 dark:text-white/60 space-y-1.5 list-disc pl-4 lowercase transition-colors duration-500">
+            <li>12-factor api gateway architecture with an envsubst-driven nginx reverse proxy ensuring no internal ips or topologies are exposed.</li>
+            <li>real-time virtualization telemetry pulling live cpu, ram, zfs pool health, and lxc/vm counts via proxmox ve api.</li>
+            <li>container orchestration monitoring with portainer ce and network mesh device status tracking via tailscale api.</li>
+            <li>instant ping latency metrics and uptime indicators seamlessly fed from uptime kuma monitors.</li>
+            <li>media server & download bandwidth widgets tracking active jellyfin streams and qbittorrent transfer rates.</li>
+            <li>dynamic service catalog driven by json schema with ctrl+k command palette for instantaneous keyboard navigation.</li>
           </ul>
         </div>
 

@@ -23,4 +23,4 @@ A minimalist, self-hosted portfolio built to showcase my technical journey, proj
 * **Email:** contact@charlesterrenal.com
 
 ---
-Last updated: July 2026
+Last updated: September 2026
