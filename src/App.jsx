@@ -92,12 +92,12 @@ function App() {
               <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-emerald-500/20 blur-md opacity-40 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
               
               <button 
-                onClick={() => setExpandedImage("images/linkedin-picture.webp")}
+                onClick={() => setExpandedImage("images/email-avatar.jpeg")}
                 aria-label="View profile photo"
                 className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border border-black/15 dark:border-white/15 shrink-0 bg-[#e2e2dc] dark:bg-[#1a1a1a] transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:border-black/30 dark:hover:border-white/30 cursor-pointer block p-0 ring-1 ring-black/5 dark:ring-white/10"
               >
                 <img
-                  src="images/linkedin-picture.webp"
+                  src="images/email-avatar.jpeg"
                   alt="Charles Terrenal"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   width="128"
