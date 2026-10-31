@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    /* keeps anchor targets and focused elements clear of the fixed navbar */
+    scroll-padding-top: 6rem;
+  }
   body {
     @apply bg-[#f0f0ea] dark:bg-[#111111] text-[#222222] dark:text-[#e0e0e0] font-sans antialiased selection:bg-black/10 dark:selection:bg-white/30 selection:text-black dark:selection:text-white overflow-x-hidden transition-colors duration-500;
   }

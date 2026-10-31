@@ -1,5 +1,5 @@
-import { useEffect, useState, lazy, Suspense } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { Github, Linkedin, Mail, Moon, Sun, Instagram, Facebook, X } from "lucide-react";
 
 const BackgroundParticles = lazy(() => import("./components/BackgroundParticles"));
@@ -9,8 +9,15 @@ const ContactForm = lazy(() => import("./components/ContactForm"));
 
 function App() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(() => {
+    try {
+      const saved = localStorage.getItem('theme');
+      if (saved) return saved === 'dark';
+    } catch {}
+    return !window.matchMedia('(prefers-color-scheme: light)').matches;
+  });
   const [expandedImage, setExpandedImage] = useState(null);
+  const imageTrigger = useRef(null);
 
   useEffect(() => {
     if (darkMode) {
@@ -20,11 +27,26 @@ function App() {
     }
   }, [darkMode]);
 
+  const toggleTheme = () => {
+    setDarkMode(!darkMode);
+    try { localStorage.setItem('theme', darkMode ? 'light' : 'dark'); } catch {}
+  };
+
+  const openImage = (src, alt) => {
+    imageTrigger.current = document.activeElement;
+    setExpandedImage({ src, alt });
+  };
+
   useEffect(() => {
     if (!expandedImage) return;
+    const trigger = imageTrigger.current;
     const onKeyDown = (e) => { if (e.key === 'Escape') setExpandedImage(null); };
     document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      // runs after the page is no longer inert, so focus can return to what opened the viewer
+      trigger?.focus();
+    };
   }, [expandedImage]);
 
   const fadeInUp = {
@@ -33,24 +55,27 @@ function App() {
   };
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="relative min-h-screen bg-[#f0f0ea] dark:bg-[#111111] text-[#222222] dark:text-[#e0e0e0] font-sans selection:bg-black/10 dark:selection:bg-white/20 transition-colors duration-500">
+      {/* inert while the image viewer is open, so Tab stays inside the dialog */}
+      <div inert={expandedImage ? "" : undefined}>
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[999] focus:px-4 focus:py-2 focus:bg-black focus:text-white focus:rounded-lg focus:text-sm focus:font-medium">
         Skip to main content
       </a>
       
       {/* Floating Navbar */}
       <nav aria-label="Primary navigation" className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-50 bg-white/40 dark:bg-black/40 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full px-4 sm:px-6 py-2 sm:py-2.5 flex items-center gap-3 sm:gap-6 shadow-sm transition-colors duration-500 w-[90%] sm:w-auto max-w-fit justify-center">
-        <a href="#about" className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">about</a>
-        <a href="#experiences" className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">experiences</a>
-        <a href="#projects" className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">projects</a>
-        <a href="#contact" className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">contact</a>
+        <a href="#about" className="py-1.5 -my-1.5 text-[11px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">about</a>
+        <a href="#experiences" className="py-1.5 -my-1.5 text-[11px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">experiences</a>
+        <a href="#projects" className="py-1.5 -my-1.5 text-[11px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">projects</a>
+        <a href="#contact" className="py-1.5 -my-1.5 text-[11px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">contact</a>
       </nav>
 
       {/* Theme Toggle */}
       <button 
-        onClick={() => setDarkMode(!darkMode)} 
+        onClick={toggleTheme}
         className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 backdrop-blur-md border border-black/10 dark:border-white/10 hover:text-black dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/20 transition-all duration-300"
-        aria-label="Toggle Theme"
+        aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
       >
         {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
       </button>
@@ -76,7 +101,7 @@ function App() {
               <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-emerald-500/20 blur-md opacity-40 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
               
               <button 
-                onClick={() => setExpandedImage("images/email-avatar.jpeg")}
+                onClick={() => openImage("images/email-avatar.jpeg", "Charles Terrenal")}
                 aria-label="View profile photo"
                 className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border border-black/15 dark:border-white/15 shrink-0 bg-[#e2e2dc] dark:bg-[#1a1a1a] transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:border-black/30 dark:hover:border-white/30 cursor-pointer block p-0 ring-1 ring-black/5 dark:ring-white/10"
               >
@@ -129,40 +154,40 @@ function App() {
           </div>
 
           {/* Affiliations / Tools Pills */}
-          <div className="flex flex-row flex-wrap sm:flex-nowrap justify-center sm:justify-start gap-2 sm:gap-2.5 mb-10">
+          <div className="flex flex-row flex-wrap justify-center sm:justify-start gap-2 sm:gap-2.5 mb-10">
             <a href="https://www.pup.edu.ph/cea/" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
-              <img src="images/pup-logo.png" alt="PUP" className="w-5 h-5 rounded-md object-cover shrink-0" />
+              <img src="images/pup-logo.png" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-black dark:text-white leading-tight transition-colors duration-500">pup</span>
-                <span className="text-[9px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">college of engineering</span>
+                <span className="text-[11px] font-bold text-black dark:text-white leading-tight transition-colors duration-500">pup</span>
+                <span className="text-[10px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">college of engineering</span>
               </div>
             </a>
             <a href="https://stellarph.io" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
-              <img src="images/stellar-logo.png" alt="StellarPH" className="w-5 h-5 rounded-md object-cover shrink-0" />
+              <img src="images/stellar-logo.png" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-black dark:text-white leading-tight transition-colors duration-500">stellarph</span>
-                <span className="text-[9px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500">tech intern</span>
+                <span className="text-[11px] font-bold text-black dark:text-white leading-tight transition-colors duration-500">stellarph</span>
+                <span className="text-[10px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500">tech intern</span>
               </div>
             </a>
             <a href="https://www.linkedin.com/company/cncp-mnl/" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
-              <img src="images/cncp-logo.jpg" alt="CNCP" className="w-5 h-5 rounded-md object-cover shrink-0" />
+              <img src="images/cncp-logo.jpg" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-black dark:text-white leading-tight transition-colors duration-500">cncp</span>
-                <span className="text-[9px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">ent. networking</span>
+                <span className="text-[11px] font-bold text-black dark:text-white leading-tight transition-colors duration-500">cncp</span>
+                <span className="text-[10px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">ent. networking</span>
               </div>
             </a>
             <a href="https://www.facebook.com/ICPEP.SE.PUPManila" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
-              <img src="images/icpeppup-logo.png" alt="ICpEP.SE - PUP Manila" className="w-5 h-5 rounded-md object-cover shrink-0" />
+              <img src="images/icpeppup-logo.png" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-black dark:text-white leading-tight transition-colors duration-500 whitespace-nowrap">icpep.se - pup manila</span>
-                <span className="text-[9px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">avp internal</span>
+                <span className="text-[11px] font-bold text-black dark:text-white leading-tight transition-colors duration-500 whitespace-nowrap">icpep.se - pup manila</span>
+                <span className="text-[10px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">avp internal</span>
               </div>
             </a>
           </div>
         </motion.header>
 
         {/* About Section */}
-        <motion.section id="about" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} className="mb-16 scroll-mt-24">
+        <motion.section id="about" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} className="mb-16">
           <h2 className="section-title">about</h2>
           <p className="text-[13px] text-black/60 dark:text-white/60 leading-relaxed lowercase transition-colors duration-500 mb-8">
             i'm a computer engineering student at pup sta. mesa with a passion for networking, cloud computing, and self-hosted environments.<br /><br />
@@ -173,7 +198,7 @@ function App() {
 
         {/* Experiences Section - Lazy Loaded */}
         <Suspense fallback={<div className="h-48 animate-pulse bg-black/5 dark:bg-white/5 rounded-xl mb-16" />}>
-          <Experiences setExpandedImage={setExpandedImage} />
+          <Experiences />
         </Suspense>
 
         {/* Education / Certifications Section */}
@@ -224,11 +249,11 @@ function App() {
 
         {/* Projects Section - Lazy Loaded */}
         <Suspense fallback={<div className="h-64 animate-pulse bg-black/5 dark:bg-white/5 rounded-xl mb-16" />}>
-          <Projects darkMode={darkMode} setExpandedImage={setExpandedImage} />
+          <Projects darkMode={darkMode} openImage={openImage} />
         </Suspense>
 
         {/* Let's Work Together Section - Lazy Loaded */}
-        <motion.section id="contact" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} className="mb-12 scroll-mt-24">
+        <motion.section id="contact" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} className="mb-12">
           <h2 className="section-title mb-6">let's work together</h2>
           <Suspense fallback={<div className="h-64 animate-pulse bg-black/5 dark:bg-white/5 rounded-xl" />}>
             <ContactForm darkMode={darkMode} />
@@ -245,6 +270,7 @@ function App() {
           <span>© {new Date().getFullYear()} all rights reserved.</span>
         </p>
       </footer>
+      </div>
 
       {/* Fullscreen Image Viewer */}
       <AnimatePresence>
@@ -260,13 +286,14 @@ function App() {
             </button>
             <motion.img
               initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }} transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              src={expandedImage} alt="Expanded view"
+              src={expandedImage.src} alt={expandedImage.alt}
               className="max-w-full max-h-[85vh] rounded-xl shadow-2xl object-contain"
             />
           </motion.div>
         )}
       </AnimatePresence>
     </div>
+    </MotionConfig>
   );
 }
 
