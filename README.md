@@ -12,7 +12,7 @@ A minimalist, self-hosted portfolio built to showcase my technical journey, proj
 * **Environment:** Developed and managed on [AHHS (A Humble Home Server)](https://github.com/charlesterrenal/ahhs).
 
 ## Project Structure
-* `images/`: Static images and resume files.
+* `images/`: Static images.
 * `src/`: React application source code and styling.
 * `.github/workflows/`: GitHub Actions CI/CD pipelines.
 * `docker-compose.yml` & `Dockerfile`: Container configurations.

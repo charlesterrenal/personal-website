@@ -3,9 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    scroll-behavior: auto;
-  }
   body {
     @apply bg-[#f0f0ea] dark:bg-[#111111] text-[#222222] dark:text-[#e0e0e0] font-sans antialiased selection:bg-black/10 dark:selection:bg-white/30 selection:text-black dark:selection:text-white overflow-x-hidden transition-colors duration-500;
   }
@@ -45,6 +42,19 @@
   .section-title {
     @apply text-sm font-bold text-black dark:text-white mb-6 lowercase transition-colors duration-500;
   }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @media (pointer: fine) {
@@ -56,6 +66,9 @@
   }
   a *, button *, .pill *, [role="button"] * {
     cursor: url('/images/cursor-pointer.svg') 5 4, pointer !important;
+  }
+  input:not([type="submit"]):not([type="button"]):not([type="reset"]), textarea {
+    cursor: text !important;
   }
 }
 

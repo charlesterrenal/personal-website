@@ -4,7 +4,7 @@ import { loadSlim } from "@tsparticles/slim";
 
 const MemoizedParticles = memo(Particles);
 
-const BackgroundParticles = ({ darkMode, prefersReducedMotion }) => {
+const BackgroundParticles = ({ darkMode }) => {
   const [init, setInit] = useState(false);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const BackgroundParticles = ({ darkMode, prefersReducedMotion }) => {
         value: "transparent",
       },
     },
-    fpsLimit: 120,
+    fpsLimit: 60,
     interactivity: {
       events: {
         onHover: {
@@ -78,7 +78,7 @@ const BackgroundParticles = ({ darkMode, prefersReducedMotion }) => {
     detectRetina: true,
   }), [darkMode]);
 
-  if (!init || prefersReducedMotion) {
+  if (!init) {
     return null;
   }
 

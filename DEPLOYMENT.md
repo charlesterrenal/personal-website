@@ -121,15 +121,17 @@ If you prefer building the Docker image directly on your host:
 # On your server
 cd /path/to/project
 git pull
-docker compose up -d --build
+# docker-compose.yml has no build section, so build the image under the name it uses
+docker build -t ghcr.io/charlesterrenal/personal-website:latest .
+docker compose up -d --force-recreate
 docker compose logs -f
 ```
 
-Or use the provided deploy script:
-```bash
-chmod +x deploy.sh
-./deploy.sh restart
-```
+### Rolling back
+
+Every push to `main` is also tagged with its commit SHA. To roll back, set
+`image: ghcr.io/charlesterrenal/personal-website:<commit-sha>` in `docker-compose.yml`, then run
+`docker compose pull && docker compose up -d`.
 
 ---
 

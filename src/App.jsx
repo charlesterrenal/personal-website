@@ -20,30 +20,12 @@ function App() {
     }
   }, [darkMode]);
 
-  const scrollToSection = (e, id) => {
-    e.preventDefault();
-    const element = document.getElementById(id);
-    if (element) {
-      const top = element.getBoundingClientRect().top + window.scrollY - 96;
-      const start = window.scrollY;
-      const distance = top - start;
-      const duration = 1200; // Slower 1.2s smooth scroll
-      let startTime = null;
-
-      const animation = (currentTime) => {
-        if (startTime === null) startTime = currentTime;
-        const timeElapsed = currentTime - startTime;
-        const progress = Math.min(timeElapsed / duration, 1);
-        
-        // easeInOutQuart for a luxurious feel
-        const ease = progress < 0.5 ? 8 * progress * progress * progress * progress : 1 - Math.pow(-2 * progress + 2, 4) / 2;
-        
-        window.scrollTo(0, start + distance * ease);
-        if (timeElapsed < duration) requestAnimationFrame(animation);
-      };
-      requestAnimationFrame(animation);
-    }
-  };
+  useEffect(() => {
+    if (!expandedImage) return;
+    const onKeyDown = (e) => { if (e.key === 'Escape') setExpandedImage(null); };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [expandedImage]);
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -58,10 +40,10 @@ function App() {
       
       {/* Floating Navbar */}
       <nav aria-label="Primary navigation" className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-50 bg-white/40 dark:bg-black/40 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full px-4 sm:px-6 py-2 sm:py-2.5 flex items-center gap-3 sm:gap-6 shadow-sm transition-colors duration-500 w-[90%] sm:w-auto max-w-fit justify-center">
-        <a href="#about" onClick={(e) => scrollToSection(e, 'about')} className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">about</a>
-        <a href="#experiences" onClick={(e) => scrollToSection(e, 'experiences')} className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">experiences</a>
-        <a href="#projects" onClick={(e) => scrollToSection(e, 'projects')} className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">projects</a>
-        <a href="#contact" onClick={(e) => scrollToSection(e, 'contact')} className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">contact</a>
+        <a href="#about" className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">about</a>
+        <a href="#experiences" className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">experiences</a>
+        <a href="#projects" className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">projects</a>
+        <a href="#contact" className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">contact</a>
       </nav>
 
       {/* Theme Toggle */}
@@ -74,9 +56,11 @@ function App() {
       </button>
 
       {/* Interactive Background - Lazy Loaded */}
-      <Suspense fallback={null}>
-        <BackgroundParticles darkMode={darkMode} prefersReducedMotion={prefersReducedMotion} />
-      </Suspense>
+      {!prefersReducedMotion && (
+        <Suspense fallback={null}>
+          <BackgroundParticles darkMode={darkMode} />
+        </Suspense>
+      )}
 
       {/* Main Content Container */}
       <main id="main-content" className="relative z-10 max-w-2xl mx-auto px-6 py-24">
@@ -114,7 +98,7 @@ function App() {
             <div className="pt-0 sm:pt-2 flex flex-col items-center sm:items-start">
               <h1 className="text-xl sm:text-2xl font-bold text-black dark:text-white mb-2 lowercase tracking-tight transition-colors duration-500">charles vincent terrenal</h1>
               <p className="text-[13px] sm:text-sm text-black/60 dark:text-white/60 mb-4 leading-relaxed lowercase transition-colors duration-500">
-                computer engineering student at pup.<br className="hidden sm:block" />
+                bs computer engineering student at pup, specializing in networking.<br className="hidden sm:block" />
                 <span className="sm:hidden"> </span>aspiring to be a network engineer and a leader in tech.
               </p>
               <div className="flex items-center justify-center sm:justify-start gap-3 sm:gap-4 text-black/50 dark:text-white/50 transition-colors duration-500 flex-wrap">
@@ -150,28 +134,28 @@ function App() {
               <img src="images/pup-logo.png" alt="PUP" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
                 <span className="text-[10px] font-bold text-black dark:text-white leading-tight transition-colors duration-500">pup</span>
-                <span className="text-[9px] text-black/40 dark:text-white/40 leading-tight transition-colors duration-500 whitespace-nowrap">college of engineering</span>
+                <span className="text-[9px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">college of engineering</span>
               </div>
             </a>
             <a href="https://stellarph.io" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
               <img src="images/stellar-logo.png" alt="StellarPH" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
                 <span className="text-[10px] font-bold text-black dark:text-white leading-tight transition-colors duration-500">stellarph</span>
-                <span className="text-[9px] text-black/40 dark:text-white/40 leading-tight transition-colors duration-500">tech intern</span>
+                <span className="text-[9px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500">tech intern</span>
               </div>
             </a>
             <a href="https://www.linkedin.com/company/cncp-mnl/" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
               <img src="images/cncp-logo.jpg" alt="CNCP" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
                 <span className="text-[10px] font-bold text-black dark:text-white leading-tight transition-colors duration-500">cncp</span>
-                <span className="text-[9px] text-black/40 dark:text-white/40 leading-tight transition-colors duration-500 whitespace-nowrap">ent. networking</span>
+                <span className="text-[9px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">ent. networking</span>
               </div>
             </a>
             <a href="https://www.facebook.com/ICPEP.SE.PUPManila" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
               <img src="images/icpeppup-logo.png" alt="ICpEP.SE - PUP Manila" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
                 <span className="text-[10px] font-bold text-black dark:text-white leading-tight transition-colors duration-500 whitespace-nowrap">icpep.se - pup manila</span>
-                <span className="text-[9px] text-black/40 dark:text-white/40 leading-tight transition-colors duration-500 whitespace-nowrap">avp internal</span>
+                <span className="text-[9px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">avp internal</span>
               </div>
             </a>
           </div>
@@ -201,8 +185,18 @@ function App() {
                 <div className="w-full h-full rounded-full bg-black/10 dark:bg-white/20 transition-colors duration-500" />
               </div>
               <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mb-1 gap-2">
+                <h3 className="text-[13px] font-medium text-black dark:text-white lowercase transition-colors duration-500">data center foundation certificate (dcfc)</h3>
+                <span className="text-[11px] text-black/60 dark:text-white/60 lowercase shrink-0 font-mono transition-colors duration-500">epi · oct 2026</span>
+              </div>
+            </div>
+
+            <div className="timeline-container">
+              <div className="timeline-icon-small">
+                <div className="w-full h-full rounded-full bg-black/10 dark:bg-white/20 transition-colors duration-500" />
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mb-1 gap-2">
                 <h3 className="text-[13px] font-medium text-black dark:text-white lowercase transition-colors duration-500">mechatronics servicing nc ii</h3>
-                <span className="text-[11px] text-black/40 dark:text-white/40 lowercase shrink-0 font-mono transition-colors duration-500">tesda</span>
+                <span className="text-[11px] text-black/60 dark:text-white/60 lowercase shrink-0 font-mono transition-colors duration-500">tesda</span>
               </div>
             </div>
 
@@ -212,7 +206,7 @@ function App() {
               </div>
               <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mb-1 gap-2">
                 <h3 className="text-[13px] font-medium text-black dark:text-white lowercase transition-colors duration-500">computer systems servicing nc ii</h3>
-                <span className="text-[11px] text-black/40 dark:text-white/40 lowercase shrink-0 font-mono transition-colors duration-500">tesda</span>
+                <span className="text-[11px] text-black/60 dark:text-white/60 lowercase shrink-0 font-mono transition-colors duration-500">tesda</span>
               </div>
             </div>
           </div>
@@ -222,7 +216,7 @@ function App() {
         <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} className="mb-16">
           <h2 className="section-title">tech stack</h2>
           <div className="flex flex-wrap gap-2 mt-4">
-            {["python", "javascript", "sql", "bash", "ansible", "docker/lxc", "proxmox ve", "vmware", "linux", "git", "eve-ng / gns3", "appsheet", "n8n", "gcp", "azure"].map((tech) => (
+            {["python", "javascript", "sql", "bash", "next.js", "supabase", "ansible", "docker/lxc", "proxmox ve", "vmware", "linux", "cisco ios", "cloudflare", "tailscale", "git", "eve-ng / gns3", "appsheet", "n8n", "gcp", "azure", "kanban / agile"].map((tech) => (
               <span key={tech} className="tech-pill">{tech}</span>
             ))}
           </div>
@@ -245,7 +239,7 @@ function App() {
 
       {/* Footer */}
       <footer className="relative z-10 py-8 px-6 text-center border-t border-black/5 dark:border-white/5">
-        <p className="text-[11px] text-black/40 dark:text-white/40 lowercase transition-colors duration-500 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
+        <p className="text-[11px] text-black/60 dark:text-white/60 lowercase transition-colors duration-500 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
           <span>designed & built by charles terrenal.</span>
           <span className="hidden sm:inline">•</span>
           <span>© {new Date().getFullYear()} all rights reserved.</span>
@@ -259,8 +253,9 @@ function App() {
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 sm:p-8 cursor-zoom-out"
             onClick={() => setExpandedImage(null)}
+            role="dialog" aria-modal="true" aria-label="Image viewer"
           >
-            <button className="absolute top-6 right-6 p-2 rounded-full bg-white/10 text-white/70 hover:text-white hover:bg-white/20 transition-all" aria-label="Close image">
+            <button autoFocus className="absolute top-6 right-6 p-2 rounded-full bg-white/10 text-white/70 hover:text-white hover:bg-white/20 transition-all" aria-label="Close image">
               <X className="w-5 h-5" />
             </button>
             <motion.img

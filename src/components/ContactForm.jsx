@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Turnstile } from '@marsidev/react-turnstile';
 
@@ -13,18 +13,7 @@ const ContactForm = ({ darkMode }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [cfToken, setCfToken] = useState(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const turnstileRef = useRef(null);
 
   const inquiryOptions = [
     { value: "General Inquiry", label: "general inquiry" },
@@ -41,28 +30,8 @@ const ContactForm = ({ darkMode }) => {
     setIsSubmitting(true);
     setSubmitStatus(null);
 
-    const now = new Date();
-    const phDate = new Intl.DateTimeFormat('en-PH', {
-      timeZone: 'Asia/Manila',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }).format(now);
-    
-    const phTime = new Intl.DateTimeFormat('en-PH', {
-      timeZone: 'Asia/Manila',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    }).format(now);
-
-    const submissionData = {
-      ...formData,
-      id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15),
-      submittedDate: phDate,
-      submittedTime: phTime,
-      cfToken: cfToken
-    };
+    // id and submission time are set server-side in n8n
+    const submissionData = { ...formData, cfToken };
 
     try {
       const res = await fetch('https://n8n.charlesterrenal.com/webhook/61f81cd1-66f0-4c2a-903c-a7d3842a14d7', {
@@ -77,12 +46,20 @@ const ContactForm = ({ darkMode }) => {
         setTimeout(() => setSubmitStatus(null), 10000);
       } else {
         setSubmitStatus('error');
+        resetTurnstile();
       }
     } catch (error) {
       setSubmitStatus('error');
+      resetTurnstile();
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Turnstile tokens are single-use; get a fresh one so a retry can pass verification
+  const resetTurnstile = () => {
+    setCfToken(null);
+    turnstileRef.current?.reset();
   };
 
   return (
@@ -99,8 +76,8 @@ const ContactForm = ({ darkMode }) => {
             </div>
             <span className="font-medium">thanks for reaching out!</span>
             <span className="opacity-60 mt-1">i'll get back to you shortly.</span>
-            <span className="opacity-40 text-[10px] mt-4 px-4 leading-tight">if you don't receive a confirmation email, please check your spam folder.</span>
-            <button onClick={() => setSubmitStatus(null)} className="mt-4 text-xs opacity-40 hover:opacity-70 underline" aria-label="Dismiss success message">dismiss</button>
+            <span className="opacity-60 text-[10px] mt-4 px-4 leading-tight">if you don't receive a confirmation email, please check your spam folder.</span>
+            <button onClick={() => setSubmitStatus(null)} className="mt-4 text-xs opacity-60 hover:opacity-80 underline" aria-label="Dismiss success message">dismiss</button>
           </motion.div>
         ) : (
           <motion.form key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} onSubmit={handleFormSubmit} className="flex flex-col gap-3 relative z-10">
@@ -112,7 +89,7 @@ const ContactForm = ({ darkMode }) => {
           <div>
             <label htmlFor="name" className="sr-only">Full Name</label>
             <input 
-              id="name" type="text" name="name" required placeholder="full name" autoComplete="name"
+              id="name" type="text" name="name" required maxLength={100} placeholder="full name" autoComplete="name"
               value={formData.name} onChange={handleFormChange}
               className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors"
             />
@@ -136,51 +113,25 @@ const ContactForm = ({ darkMode }) => {
             />
           </div>
 
-          <div className="relative z-20" ref={dropdownRef}>
+          <div className="relative">
             <label htmlFor="inquiryType" className="sr-only">Inquiry Type</label>
-            <button
-              type="button"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="w-full text-left bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors flex justify-between items-center"
+            <select
+              id="inquiryType" name="inquiryType" required
+              value={formData.inquiryType} onChange={handleFormChange}
+              className={`w-full appearance-none bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl pl-4 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors [&>option]:bg-white [&>option]:text-black dark:[&>option]:bg-[#1a1a1a] dark:[&>option]:text-white ${formData.inquiryType ? "text-black dark:text-white" : "text-black/60 dark:text-white/60"}`}
             >
-              <span className={formData.inquiryType ? "" : "text-black/40 dark:text-white/40"}>
-                {formData.inquiryType ? inquiryOptions.find(o => o.value === formData.inquiryType)?.label : "select..."}
-              </span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform duration-300 opacity-40 ${isDropdownOpen ? 'rotate-180' : ''}`}><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </button>
-            
-            <AnimatePresence>
-              {isDropdownOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute w-full mt-2 bg-white dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-xl overflow-hidden shadow-2xl z-50 backdrop-blur-xl"
-                >
-                  {inquiryOptions.map((option) => (
-                    <button
-                      key={option.value}
-                      type="button"
-                      onClick={() => {
-                        setFormData(prev => ({ ...prev, inquiryType: option.value }));
-                        setIsDropdownOpen(false);
-                      }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-black dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <input type="hidden" name="inquiryType" required value={formData.inquiryType} />
+              <option value="" disabled>select...</option>
+              {inquiryOptions.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-black/60 dark:text-white/60"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
 
           <div>
             <label htmlFor="message" className="sr-only">Message</label>
             <textarea 
-              id="message" name="message" required placeholder="what are you hoping to get out of it?" 
+              id="message" name="message" required maxLength={5000} placeholder="what are you hoping to get out of it?" 
               value={formData.message} onChange={handleFormChange} rows={3}
               className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors"
             />
@@ -192,6 +143,7 @@ const ContactForm = ({ darkMode }) => {
 
           <div className="flex justify-center my-2">
             <Turnstile
+              ref={turnstileRef}
               siteKey="0x4AAAAAAD7QAbgaqffQNNkX"
               onSuccess={(token) => setCfToken(token)}
               options={{ theme: darkMode ? 'dark' : 'light' }}

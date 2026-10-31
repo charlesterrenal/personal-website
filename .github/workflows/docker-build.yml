@@ -28,4 +28,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/charlesterrenal/personal-website:latest
+          tags: |
+            ghcr.io/charlesterrenal/personal-website:latest
+            ghcr.io/charlesterrenal/personal-website:${{ github.sha }}
