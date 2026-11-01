@@ -1,210 +1,100 @@
-# Docker Deployment Guide
+# Deployment Guide
 
-## Local Development & Testing
+The site ships as a Docker image. Every push to `main` builds it with GitHub Actions and publishes it to GitHub Container Registry as:
 
-### Build and run locally:
+* `ghcr.io/charlesterrenal/personal-website:latest`
+* `ghcr.io/charlesterrenal/personal-website:<commit-sha>`
+
+Inside the container, Nginx serves the built site on port **3000**. `docker-compose.yml` publishes it on host port **3001** and restarts it automatically (`restart: unless-stopped`).
+
+---
+
+## Test the production image locally
+
 ```bash
-# Option 1: Docker Compose (Recommended)
-docker-compose up --build
-
-# Option 2: Manual Docker commands
 docker build -t portfolio .
-docker run -p 3000:3000 portfolio
+docker run --rm -p 3000:3000 portfolio
 ```
 
-Visit `http://localhost:3000`
+Visit `http://localhost:3000`. A missing path such as `/nope` should show the 404 page.
 
 ---
 
-## Deployment to Production (AHHS on Proxmox)
+## Deploy on the server
 
-### Prerequisites on your server:
-- Docker installed
-- Docker Compose installed
-- Git installed (if pulling from repository)
-
-### Step 1: Get the code on your server
-```bash
-# Option A: Clone from git
-git clone <your-repo-url> /path/to/project
-cd /path/to/project
-
-# Option B: Upload manually
-scp -r . user@your-server:/path/to/project
-```
-
-### Step 2: Deploy with Docker Compose
-```bash
-cd /path/to/project
-
-# Build and start the container
-docker compose up -d
-
-# Check logs
-docker compose logs -f
-
-# Stop the container
-docker compose down
-```
-
-### Step 3: Set up Nginx as reverse proxy (recommended)
-
-Create `/etc/nginx/sites-available/portfolio`:
-```nginx
-server {
-    listen 80;
-    server_name charlesterrenal.com;  # Or your domain
-
-    # Redirect HTTP to HTTPS (if using SSL)
-    # return 301 https://$server_name$request_uri;
-
-    location / {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
-Enable it:
-```bash
-sudo ln -s /etc/nginx/sites-available/portfolio /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl reload nginx
-```
-
-### Step 4: Optional - Set up auto-restart
-Add to crontab to restart container daily:
-```bash
-crontab -e
-# Add line:
-0 3 * * * cd /home/user/portfolio && docker-compose restart
-```
-
----
-
-## Continuous Deployment Workflow
-
-### Method 1: GitHub Actions CI/CD (Recommended)
-
-When code is pushed to `main`, GitHub Actions automatically builds and publishes the production image to GitHub Container Registry (`ghcr.io`).
-
-On your server, pull the pre-built image and recreate the container:
+Prerequisites: Docker with the Compose plugin, and a copy of `docker-compose.yml` on the server.
 
 ```bash
-# Navigate to the project directory where docker-compose.yml resides
 cd /path/to/project
 
 # Pull the latest image built by GitHub Actions
-docker compose pull
+docker compose pull portfolio
 
-# Recreate and start the container with the updated image
-docker compose up -d --force-recreate
+# Recreate only the portfolio container
+docker compose up -d --force-recreate portfolio
 
-# (Optional) Clean up dangling images to free disk space
+# (Optional) remove old images to free disk space
 docker image prune -f
 ```
 
+Naming the `portfolio` service keeps other services in the same compose file untouched.
+
+### After deploying
+
+Cloudflare may still serve cached copies of old responses. Purge them in the Cloudflare dashboard under **Caching → Configuration**: use **Custom Purge** for specific URLs, or **Purge Everything** for the whole zone.
+
 ---
 
-### Method 2: Local Server Rebuild
+## Exposing the site
 
-If you prefer building the Docker image directly on your host:
+The container only listens on host port 3001. Put something in front of it that handles the domain and HTTPS, for example:
+
+* **Cloudflare Tunnel:** point a public hostname at `http://localhost:3001`. No open ports or certificates needed on the server.
+* **Reverse proxy (Nginx, Caddy, Traefik):** proxy the domain to `http://localhost:3001` and handle TLS there.
+
+Keep server-specific addresses, hostnames and credentials out of this repo.
+
+---
+
+## Build on the server instead
+
+If you prefer not to use the published image:
 
 ```bash
-# On your server
 cd /path/to/project
 git pull
-# docker-compose.yml has no build section, so build the image under the name it uses
+# docker-compose.yml has no build section, so build under the image name it uses
 docker build -t ghcr.io/charlesterrenal/personal-website:latest .
-docker compose up -d --force-recreate
-docker compose logs -f
+docker compose up -d --force-recreate portfolio
 ```
-
-### Rolling back
-
-Every push to `main` is also tagged with its commit SHA. To roll back, set
-`image: ghcr.io/charlesterrenal/personal-website:<commit-sha>` in `docker-compose.yml`, then run
-`docker compose pull && docker compose up -d`.
 
 ---
 
-## SSL/HTTPS Setup (Recommended)
+## Rolling back
 
-Install Certbot and Let's Encrypt:
+Set the image in `docker-compose.yml` to a previous commit's tag:
+
+```yaml
+image: ghcr.io/charlesterrenal/personal-website:<commit-sha>
+```
+
+Then run:
+
 ```bash
-sudo apt install certbot python3-certbot-nginx
-sudo certbot --nginx -d charlesterrenal.com
+docker compose pull portfolio && docker compose up -d portfolio
 ```
 
-Update Nginx config to:
-```nginx
-server {
-    listen 80;
-    server_name charlesterrenal.com;
-    return 301 https://$server_name$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    server_name charlesterrenal.com;
-
-    ssl_certificate /etc/letsencrypt/live/charlesterrenal.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/charlesterrenal.com/privkey.pem;
-
-    location / {
-        proxy_pass http://localhost:3000;
-        # ... rest of proxy config
-    }
-}
-```
+Switch back to `:latest` once the fix is on `main`.
 
 ---
 
 ## Troubleshooting
 
-### Container won't start:
 ```bash
-docker-compose logs
-docker-compose down
-docker-compose up --build
+docker compose ps                  # is the container running?
+docker compose logs -f portfolio   # follow its logs
+docker stats                       # resource usage
 ```
 
-### Port 3000 already in use:
-```bash
-# Change port in docker-compose.yml
-# Or kill the process:
-lsof -i :3000
-kill -9 <PID>
-```
-
-### Nginx not reaching container:
-```bash
-# Ensure Docker network is accessible
-docker network ls
-docker inspect portfolio-network
-```
-
----
-
-## Monitoring
-
-```bash
-# View logs
-docker-compose logs -f
-
-# Check container status
-docker ps -a
-
-# Check resource usage
-docker stats
-
-# Restart if needed
-docker-compose restart
-```
+* **Port 3001 already in use:** change the host side of `ports` in `docker-compose.yml` (for example `"3002:3000"`), then update whatever points at it.
+* **Site shows old content after a deploy:** confirm the new image was pulled (`docker compose images`), then purge the Cloudflare cache.
