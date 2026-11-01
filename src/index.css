@@ -4,8 +4,15 @@
 
 @layer base {
   html {
-    /* keeps anchor targets and focused elements clear of the fixed navbar */
-    scroll-padding-top: 6rem;
+    /* keeps anchor targets and focused elements clear of the fixed navbar (bottom on phones, top from sm up) */
+    scroll-padding-top: 1.5rem;
+    scroll-padding-bottom: 5rem;
+  }
+  @media (min-width: 640px) {
+    html {
+      scroll-padding-top: 6rem;
+      scroll-padding-bottom: 0;
+    }
   }
   body {
     @apply bg-[#f0f0ea] dark:bg-[#111111] text-[#222222] dark:text-[#e0e0e0] font-sans antialiased selection:bg-black/10 dark:selection:bg-white/30 selection:text-black dark:selection:text-white overflow-x-hidden transition-colors duration-500;

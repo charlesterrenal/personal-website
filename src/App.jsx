@@ -11,8 +11,6 @@ const ImageViewer = lazy(() => import("./components/ImageViewer"));
 
 function App() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // touch screens can't use the hover effect, so skip the 145 KB particle script and its animation loop
-  const showParticles = !prefersReducedMotion && !window.matchMedia('(pointer: coarse)').matches;
   const [darkMode, setDarkMode] = useState(() => {
     try {
       const saved = localStorage.getItem('theme');
@@ -63,7 +61,7 @@ function App() {
       </a>
       
       {/* Floating Navbar */}
-      <nav aria-label="Primary navigation" className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-50 bg-white/40 dark:bg-black/40 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full px-4 sm:px-6 py-2 sm:py-2.5 flex items-center gap-3 sm:gap-6 shadow-sm transition-colors duration-500 w-[90%] sm:w-auto max-w-fit justify-center">
+      <nav aria-label="Primary navigation" className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] sm:bottom-auto sm:top-6 left-1/2 -translate-x-1/2 z-50 bg-white/40 dark:bg-black/40 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full px-4 sm:px-6 py-2 sm:py-2.5 flex items-center gap-3 sm:gap-6 shadow-sm transition-colors duration-500 w-[90%] sm:w-auto max-w-fit justify-center">
         <a href="#about" className="py-1.5 -my-1.5 text-[11px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">about</a>
         <a href="#experiences" className="py-1.5 -my-1.5 text-[11px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">experiences</a>
         <a href="#projects" className="py-1.5 -my-1.5 text-[11px] sm:text-xs font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors lowercase cursor-pointer">projects</a>
@@ -73,21 +71,21 @@ function App() {
       {/* Theme Toggle */}
       <button 
         onClick={toggleTheme}
-        className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 backdrop-blur-md border border-black/10 dark:border-white/10 hover:text-black dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/20 transition-all duration-300"
+        className="fixed top-4 right-4 sm:top-auto sm:bottom-6 sm:right-6 z-50 p-3 rounded-full bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 backdrop-blur-md border border-black/10 dark:border-white/10 hover:text-black dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/20 transition-all duration-300"
         aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
       >
         {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
       </button>
 
       {/* Interactive Background - Lazy Loaded */}
-      {showParticles && (
+      {!prefersReducedMotion && (
         <Suspense fallback={null}>
           <BackgroundParticles darkMode={darkMode} />
         </Suspense>
       )}
 
       {/* Main Content Container */}
-      <main id="main-content" className="relative z-10 max-w-2xl mx-auto px-6 py-24">
+      <main id="main-content" className="relative z-10 max-w-2xl mx-auto px-6 pt-20 sm:pt-24 pb-24">
         
         {/* Header Section */}
         <motion.header 
@@ -252,7 +250,7 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 py-8 px-6 text-center border-t border-black/5 dark:border-white/5">
+      <footer className="relative z-10 pt-8 pb-24 sm:pb-8 px-6 text-center border-t border-black/5 dark:border-white/5">
         <p className="text-xs text-black/60 dark:text-white/60 lowercase transition-colors duration-500 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
           <span>designed & built by charles terrenal.</span>
           <span className="hidden sm:inline">•</span>
