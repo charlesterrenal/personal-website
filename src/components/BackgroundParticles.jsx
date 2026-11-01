@@ -40,10 +40,10 @@ const BackgroundParticles = ({ darkMode }) => {
     },
     particles: {
       color: {
-        value: darkMode ? "#ffffff" : "#000000",
+        value: "#ffffff",
       },
       links: {
-        color: darkMode ? "#ffffff" : "#000000",
+        color: "#ffffff",
         distance: 150,
         enable: true,
         opacity: 0.1,
@@ -76,18 +76,22 @@ const BackgroundParticles = ({ darkMode }) => {
       },
     },
     detectRetina: true,
-  }), [darkMode]);
+  }), []);
 
   if (!init) {
     return null;
   }
 
+  // Particles reloads on any prop change, so theme is applied via CSS invert on a wrapper instead.
+  // Wrapper is fixed because a filter makes it the containing block for the fixed canvas.
   return (
-    <MemoizedParticles
-      id="tsparticles"
-      options={particlesOptions}
-      className="absolute inset-0 z-0 opacity-40 transition-opacity duration-500"
-    />
+    <div className={`fixed inset-0 z-0 ${darkMode ? "" : "invert"}`}>
+      <MemoizedParticles
+        id="tsparticles"
+        options={particlesOptions}
+        className="absolute inset-0 opacity-40 transition-opacity duration-500"
+      />
+    </div>
   );
 };
 
