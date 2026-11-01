@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>Page not found - Charles Terrenal</title>
+    <link rel="icon" type="image/jpeg" href="/images/email-avatar.jpeg">
+    <script>
+      // same theme logic as index.html, so the page matches the visitor's saved choice
+      (function () {
+        var dark = !matchMedia('(prefers-color-scheme: light)').matches;
+        try { var saved = localStorage.getItem('theme'); if (saved) dark = saved === 'dark'; } catch (e) {}
+        if (dark) document.documentElement.classList.add('dark');
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+      :root { --bg: #f0f0ea; --text: #222222; --strong: #000000; --muted: rgba(0, 0, 0, 0.6); --line: rgba(0, 0, 0, 0.1); }
+      .dark { --bg: #111111; --text: #e0e0e0; --strong: #ffffff; --muted: rgba(255, 255, 255, 0.6); --line: rgba(255, 255, 255, 0.1); }
+      * { box-sizing: border-box; margin: 0; }
+      body {
+        min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
+        background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased; text-transform: lowercase; text-align: center;
+      }
+      @media (pointer: fine) {
+        body { cursor: url('/images/cursor.svg') 5 4, auto; }
+        a { cursor: url('/images/cursor-pointer.svg') 5 4, pointer; }
+      }
+      .code { font-family: ui-monospace, monospace; font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+      h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; color: var(--strong); margin-bottom: 8px; }
+      p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+      a {
+        display: inline-block; padding: 10px 20px; border: 1px solid var(--line); border-radius: 12px;
+        font-size: 13px; font-weight: 500; color: var(--strong); text-decoration: none;
+        transition: background-color 0.3s;
+      }
+      a:hover { background: var(--line); }
+      a:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="code">404</div>
+        <h1>page not found</h1>
+        <p>this page doesn't exist or has moved.</p>
+        <a href="/">back to home</a>
+    </main>
+</body>
+</html>
