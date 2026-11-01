@@ -9,3 +9,8 @@ README.md
 .vscode
 .idea
 *.log
+
+# full-resolution certificate scans; the site uses the .webp copies
+images/dcfc-certification.png
+images/nc2-css.png
+images/nc2-ms.png
