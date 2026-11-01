@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Turnstile } from '@marsidev/react-turnstile';
 
+const fieldClass = "w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/60 dark:placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors";
+
 const ContactForm = ({ darkMode }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -43,7 +45,9 @@ const ContactForm = ({ darkMode }) => {
       const res = await fetch('https://n8n.charlesterrenal.com/webhook/61f81cd1-66f0-4c2a-903c-a7d3842a14d7', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submissionData)
+        body: JSON.stringify(submissionData),
+        // without a limit, a stalled n8n leaves the button spinning until Cloudflare gives up (~100s)
+        signal: AbortSignal.timeout(15000)
       });
       if (res.ok) {
         setSubmitStatus('success');
@@ -68,7 +72,7 @@ const ContactForm = ({ darkMode }) => {
   };
 
   return (
-    <div className="transition-colors duration-500 relative overflow-hidden">
+    <div className="transition-colors duration-500 relative">
       <p className="text-sm text-black/60 dark:text-white/60 mb-6 lowercase max-w-lg">
         fill out the form with your goals and preferred format. i'll review your inquiry and get back to you with a custom proposal.
       </p>
@@ -85,7 +89,7 @@ const ContactForm = ({ darkMode }) => {
             </div>
             <h3 ref={successRef} tabIndex={-1} className="font-medium focus:outline-none">thanks for reaching out!</h3>
             <span className="opacity-60 mt-1">i'll get back to you shortly.</span>
-            <span className="opacity-60 text-[10px] mt-4 px-4 leading-tight">if you don't receive a confirmation email, please check your spam folder.</span>
+            <span className="opacity-60 text-xs mt-4 px-4 leading-tight">if you don't receive a confirmation email, please check your spam folder.</span>
             <button onClick={() => setSubmitStatus(null)} className="mt-4 text-xs opacity-60 hover:opacity-80 underline" aria-label="Dismiss success message">dismiss</button>
           </motion.div>
         ) : (
@@ -95,7 +99,7 @@ const ContactForm = ({ darkMode }) => {
             <input 
               id="name" type="text" name="name" required maxLength={100} placeholder="full name" autoComplete="name"
               value={formData.name} onChange={handleFormChange}
-              className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/60 dark:placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors"
+              className={fieldClass}
             />
           </div>
           
@@ -104,7 +108,7 @@ const ContactForm = ({ darkMode }) => {
             <input 
               id="email" type="email" name="email" required placeholder="email" autoComplete="email"
               value={formData.email} onChange={handleFormChange}
-              className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/60 dark:placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors"
+              className={fieldClass}
             />
           </div>
 
@@ -113,7 +117,7 @@ const ContactForm = ({ darkMode }) => {
             <input 
               id="company" type="text" name="company" placeholder="company / organization" autoComplete="organization"
               value={formData.company} onChange={handleFormChange}
-              className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/60 dark:placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors"
+              className={fieldClass}
             />
           </div>
 
@@ -137,12 +141,12 @@ const ContactForm = ({ darkMode }) => {
             <textarea 
               id="message" name="message" required maxLength={5000} placeholder="what are you hoping to get out of it?" 
               value={formData.message} onChange={handleFormChange} rows={3}
-              className="w-full bg-[#e2e2dc]/50 dark:bg-[#1a1a1a]/50 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-black dark:text-white placeholder:text-black/60 dark:placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-black/30 dark:focus:border-white/30 transition-colors"
+              className={fieldClass}
             />
           </div>
 
           {submitStatus === 'error' && (
-            <p role="alert" className="text-red-500 text-xs lowercase px-1 mt-1">something went wrong. please try again.</p>
+            <p role="alert" className="text-red-500 text-xs lowercase px-1 mt-1">something went wrong. please try again, or email <a href="mailto:contact@charlesterrenal.com" className="underline">contact@charlesterrenal.com</a>.</p>
           )}
 
           <div className="flex justify-center my-2">

@@ -1,14 +1,18 @@
 import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
+import { fadeInUp } from "./motion";
 import { Github, Linkedin, Mail, Moon, Sun, Instagram, Facebook, X } from "lucide-react";
 
 const BackgroundParticles = lazy(() => import("./components/BackgroundParticles"));
 const Experiences = lazy(() => import("./components/Experiences"));
 const Projects = lazy(() => import("./components/Projects"));
 const ContactForm = lazy(() => import("./components/ContactForm"));
+const ImageViewer = lazy(() => import("./components/ImageViewer"));
 
 function App() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // touch screens can't use the hover effect, so skip the 145 KB particle script and its animation loop
+  const showParticles = !prefersReducedMotion && !window.matchMedia('(pointer: coarse)').matches;
   const [darkMode, setDarkMode] = useState(() => {
     try {
       const saved = localStorage.getItem('theme');
@@ -32,9 +36,9 @@ function App() {
     try { localStorage.setItem('theme', darkMode ? 'light' : 'dark'); } catch {}
   };
 
-  const openImage = (src, alt) => {
+  const openImage = (src, alt, isLogo = false) => {
     imageTrigger.current = document.activeElement;
-    setExpandedImage({ src, alt });
+    setExpandedImage({ src, alt, isLogo });
   };
 
   useEffect(() => {
@@ -48,11 +52,6 @@ function App() {
       trigger?.focus();
     };
   }, [expandedImage]);
-
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-  };
 
   return (
     <MotionConfig reducedMotion="user">
@@ -81,7 +80,7 @@ function App() {
       </button>
 
       {/* Interactive Background - Lazy Loaded */}
-      {!prefersReducedMotion && (
+      {showParticles && (
         <Suspense fallback={null}>
           <BackgroundParticles darkMode={darkMode} />
         </Suspense>
@@ -158,29 +157,29 @@ function App() {
             <a href="https://www.pup.edu.ph/cea/" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
               <img src="images/pup-logo.png" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
-                <span className="text-[11px] font-bold text-black dark:text-white leading-tight transition-colors duration-500">pup</span>
-                <span className="text-[10px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">college of engineering</span>
+                <span className="text-xs font-bold text-black dark:text-white leading-tight transition-colors duration-500">pup</span>
+                <span className="text-[11px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">college of engineering</span>
               </div>
             </a>
             <a href="https://stellarph.io" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
               <img src="images/stellar-logo.png" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
-                <span className="text-[11px] font-bold text-black dark:text-white leading-tight transition-colors duration-500">stellarph</span>
-                <span className="text-[10px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500">tech intern</span>
+                <span className="text-xs font-bold text-black dark:text-white leading-tight transition-colors duration-500">stellarph</span>
+                <span className="text-[11px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500">tech intern</span>
               </div>
             </a>
             <a href="https://www.linkedin.com/company/cncp-mnl/" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
               <img src="images/cncp-logo.jpg" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
-                <span className="text-[11px] font-bold text-black dark:text-white leading-tight transition-colors duration-500">cncp</span>
-                <span className="text-[10px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">ent. networking</span>
+                <span className="text-xs font-bold text-black dark:text-white leading-tight transition-colors duration-500">cncp</span>
+                <span className="text-[11px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">ent. networking</span>
               </div>
             </a>
             <a href="https://www.facebook.com/ICPEP.SE.PUPManila" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
               <img src="images/icpeppup-logo.png" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
-                <span className="text-[11px] font-bold text-black dark:text-white leading-tight transition-colors duration-500 whitespace-nowrap">icpep.se - pup manila</span>
-                <span className="text-[10px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">avp internal</span>
+                <span className="text-xs font-bold text-black dark:text-white leading-tight transition-colors duration-500 whitespace-nowrap">icpep.se - pup manila</span>
+                <span className="text-[11px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">avp internal</span>
               </div>
             </a>
           </div>
@@ -198,42 +197,32 @@ function App() {
 
         {/* Experiences Section - Lazy Loaded */}
         <Suspense fallback={<div className="h-48 animate-pulse bg-black/5 dark:bg-white/5 rounded-xl mb-16" />}>
-          <Experiences />
+          <Experiences openImage={openImage} />
         </Suspense>
 
         {/* Education / Certifications Section */}
-        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} className="mb-16">
+        <motion.section id="certifications" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} className="mb-16">
           <h2 className="section-title">certifications</h2>
           <div className="mt-8">
-            <div className="timeline-container">
-              <div className="timeline-icon-small">
-                <div className="w-full h-full rounded-full bg-black/10 dark:bg-white/20 transition-colors duration-500" />
+            {[
+              { name: "data center foundation certificate (dcfc)", issuer: "epi · oct 2026", logo: "images/epi-logo.png", image: "images/dcfc-certification.webp" },
+              { name: "mechatronics servicing nc ii", issuer: "tesda", logo: "images/tesda-logo.png", image: "images/nc2-ms.webp" },
+              { name: "computer systems servicing nc ii", issuer: "tesda", logo: "images/tesda-logo.png", image: "images/nc2-css.webp" },
+            ].map((cert, i, certs) => (
+              <div key={cert.name} className={`timeline-container${i === certs.length - 1 ? " !pb-0 !border-transparent" : ""}`}>
+                <button onClick={() => openImage(cert.logo, `${cert.issuer.split(" · ")[0]} logo`, true)} aria-label={`View ${cert.issuer.split(" · ")[0]} logo`} className="timeline-icon cursor-pointer">
+                  <img src={cert.logo} alt="" className="w-full h-full rounded-full object-cover bg-white" />
+                </button>
+                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mb-1 gap-2">
+                  <h3 className="text-[13px] font-medium text-black dark:text-white lowercase transition-colors duration-500">
+                    <button onClick={() => openImage(cert.image, `${cert.name} certificate`)} aria-label={`View ${cert.name} certificate`} className="text-left cursor-pointer underline-offset-4 decoration-black/30 dark:decoration-white/30 hover:underline focus-visible:underline">
+                      {cert.name}
+                    </button>
+                  </h3>
+                  <span className="text-xs text-black/60 dark:text-white/60 lowercase shrink-0 font-mono transition-colors duration-500">{cert.issuer}</span>
+                </div>
               </div>
-              <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mb-1 gap-2">
-                <h3 className="text-[13px] font-medium text-black dark:text-white lowercase transition-colors duration-500">data center foundation certificate (dcfc)</h3>
-                <span className="text-[11px] text-black/60 dark:text-white/60 lowercase shrink-0 font-mono transition-colors duration-500">epi · oct 2026</span>
-              </div>
-            </div>
-
-            <div className="timeline-container">
-              <div className="timeline-icon-small">
-                <div className="w-full h-full rounded-full bg-black/10 dark:bg-white/20 transition-colors duration-500" />
-              </div>
-              <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mb-1 gap-2">
-                <h3 className="text-[13px] font-medium text-black dark:text-white lowercase transition-colors duration-500">mechatronics servicing nc ii</h3>
-                <span className="text-[11px] text-black/60 dark:text-white/60 lowercase shrink-0 font-mono transition-colors duration-500">tesda</span>
-              </div>
-            </div>
-
-            <div className="timeline-container !pb-0 !border-transparent">
-              <div className="timeline-icon-small">
-                <div className="w-full h-full rounded-full bg-black/10 dark:bg-white/20 transition-colors duration-500" />
-              </div>
-              <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mb-1 gap-2">
-                <h3 className="text-[13px] font-medium text-black dark:text-white lowercase transition-colors duration-500">computer systems servicing nc ii</h3>
-                <span className="text-[11px] text-black/60 dark:text-white/60 lowercase shrink-0 font-mono transition-colors duration-500">tesda</span>
-              </div>
-            </div>
+            ))}
           </div>
         </motion.section>
 
@@ -264,7 +253,7 @@ function App() {
 
       {/* Footer */}
       <footer className="relative z-10 py-8 px-6 text-center border-t border-black/5 dark:border-white/5">
-        <p className="text-[11px] text-black/60 dark:text-white/60 lowercase transition-colors duration-500 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
+        <p className="text-xs text-black/60 dark:text-white/60 lowercase transition-colors duration-500 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
           <span>designed & built by charles terrenal.</span>
           <span className="hidden sm:inline">•</span>
           <span>© {new Date().getFullYear()} all rights reserved.</span>
@@ -275,21 +264,9 @@ function App() {
       {/* Fullscreen Image Viewer */}
       <AnimatePresence>
         {expandedImage && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 sm:p-8 cursor-zoom-out"
-            onClick={() => setExpandedImage(null)}
-            role="dialog" aria-modal="true" aria-label="Image viewer"
-          >
-            <button autoFocus className="absolute top-6 right-6 p-2 rounded-full bg-white/10 text-white/70 hover:text-white hover:bg-white/20 transition-all" aria-label="Close image">
-              <X className="w-5 h-5" />
-            </button>
-            <motion.img
-              initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }} transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              src={expandedImage.src} alt={expandedImage.alt}
-              className="max-w-full max-h-[85vh] rounded-xl shadow-2xl object-contain"
-            />
-          </motion.div>
+          <Suspense fallback={null}>
+            <ImageViewer src={expandedImage.src} alt={expandedImage.alt} isLogo={expandedImage.isLogo} onClose={() => setExpandedImage(null)} />
+          </Suspense>
         )}
       </AnimatePresence>
     </div>

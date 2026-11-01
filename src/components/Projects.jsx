@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { fadeInUp } from "../motion";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -121,11 +122,6 @@ const Carousel = ({ slides, darkMode, openImage }) => {
 };
 
 const Projects = ({ darkMode, openImage }) => {
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-  };
-
   return (
     <motion.section id="projects" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} className="mb-16">
       <h2 className="section-title">projects</h2>
@@ -133,16 +129,18 @@ const Projects = ({ darkMode, openImage }) => {
         {projects.map((project, i) => (
           <div key={project.name} className={`timeline-container${i === projects.length - 1 ? " !border-transparent !pb-0" : ""}`}>
             {project.logo ? (
-              <div className="timeline-icon">
-                <img src={project.logo} alt={`${project.name} logo`} className="w-full h-full rounded-full object-cover bg-[#e2e2dc] dark:bg-[#1a1a1a] transition-colors duration-500" />
-              </div>
+              <button onClick={() => openImage(project.logo, `${project.name} logo`, true)} aria-label={`View ${project.name} logo`} className="timeline-icon cursor-pointer">
+                <img src={project.logo} alt="" className="w-full h-full rounded-full object-cover bg-[#e2e2dc] dark:bg-[#1a1a1a] transition-colors duration-500" />
+              </button>
             ) : (
               <div className="timeline-icon-small">
                 <div className="w-full h-full rounded-full bg-[#e2e2dc] dark:bg-[#1a1a1a] flex items-center justify-center text-[9px] font-bold text-black dark:text-white border border-black/10 dark:border-white/20 transition-colors duration-500">{project.letter}</div>
               </div>
             )}
-            <h3 className="text-[13px] font-medium text-black dark:text-white lowercase mb-4 flex items-center gap-2 transition-colors duration-500">
-              {project.name} <span className="text-black/30 dark:text-white/30">—</span> {project.tagline}
+            <div className="mb-4 flex items-center gap-2">
+              <h3 className="text-[13px] font-medium text-black dark:text-white lowercase transition-colors duration-500">
+                {project.name} <span className="text-black/30 dark:text-white/30" aria-hidden="true">—</span> {project.tagline}
+              </h3>
               <a href={project.repo} target="_blank" rel="noreferrer" aria-label={`${project.name} source code`} className="p-1.5 -m-1.5 rounded"><ExternalLink className="w-3 h-3 text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white" /></a>
               {project.live ? (
                 <a href={project.live} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-500/10 text-red-700 dark:text-red-400 hover:bg-red-500/20 transition-colors ml-2 shadow-[0_0_10px_rgba(239,68,68,0.2)]">
@@ -157,14 +155,14 @@ const Projects = ({ darkMode, openImage }) => {
                   <span className="text-[10px] font-bold tracking-wider uppercase">source</span>
                 </a>
               )}
-            </h3>
+            </div>
 
             <Carousel slides={project.slides} darkMode={darkMode} openImage={openImage} />
 
             <div className="flex flex-wrap gap-2 mb-4">
               {project.tags.map((tag) => <span key={tag} className="tech-pill">{tag}</span>)}
             </div>
-            <ul className="text-[11px] text-black/60 dark:text-white/60 space-y-1.5 list-disc pl-4 lowercase transition-colors duration-500">
+            <ul className="text-[13px] text-black/60 dark:text-white/60 space-y-1.5 list-disc pl-4 lowercase transition-colors duration-500">
               {project.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}
             </ul>
           </div>
