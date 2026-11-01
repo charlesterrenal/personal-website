@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { fadeInUp } from "../motion";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 
 const projects = [
@@ -64,15 +64,17 @@ const projects = [
   },
 ];
 
-const ArrowButton = ({ side, onClick }) => (
-  <motion.button
-    initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
+// stays mounted and fades out at the ends, so arrows don't pop in and out while swiping
+const ArrowButton = ({ side, onClick, hidden }) => (
+  <button
     onClick={onClick}
-    className={`absolute ${side === "left" ? "left-2" : "right-2"} top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/60 dark:bg-black/60 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-black transition-all md:opacity-0 group-hover/carousel:opacity-100 focus-visible:opacity-100 backdrop-blur-sm shadow-sm`}
+    tabIndex={hidden ? -1 : undefined}
+    aria-hidden={hidden || undefined}
+    className={`absolute ${side === "left" ? "left-2" : "right-2"} top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/60 dark:bg-black/60 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-black transition-opacity duration-300 md:opacity-0 group-hover/carousel:opacity-100 focus-visible:opacity-100 backdrop-blur-sm shadow-sm ${hidden ? "!opacity-0 pointer-events-none" : ""}`}
     aria-label={`Scroll ${side}`}
   >
     {side === "left" ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
-  </motion.button>
+  </button>
 );
 
 const Carousel = ({ slides, darkMode, openImage }) => {
@@ -94,14 +96,16 @@ const Carousel = ({ slides, darkMode, openImage }) => {
   }, []);
 
   const scroll = (direction) => {
-    ref.current?.scrollBy({ left: direction * ref.current.clientWidth * 0.85, behavior: 'smooth' });
+    const el = ref.current;
+    if (!el?.firstElementChild) return;
+    // one slide plus the gap, so the scroll lands exactly on a snap point instead of short of it
+    const step = el.firstElementChild.offsetWidth + (parseFloat(getComputedStyle(el).columnGap) || 0);
+    el.scrollBy({ left: direction * step, behavior: 'smooth' });
   };
 
   return (
     <div className="relative group/carousel">
-      <AnimatePresence>
-        {canScrollLeft && <ArrowButton side="left" onClick={() => scroll(-1)} />}
-      </AnimatePresence>
+      <ArrowButton side="left" onClick={() => scroll(-1)} hidden={!canScrollLeft} />
 
       <div ref={ref} onScroll={checkScroll} className="no-scrollbar flex gap-4 overflow-x-auto snap-x snap-mandatory mb-4 pb-2">
         {slides.map((slide) => {
@@ -114,9 +118,7 @@ const Carousel = ({ slides, darkMode, openImage }) => {
         })}
       </div>
 
-      <AnimatePresence>
-        {canScrollRight && <ArrowButton side="right" onClick={() => scroll(1)} />}
-      </AnimatePresence>
+      <ArrowButton side="right" onClick={() => scroll(1)} hidden={!canScrollRight} />
     </div>
   );
 };

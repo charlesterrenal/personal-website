@@ -4,6 +4,9 @@ import { loadSlim } from "@tsparticles/slim";
 
 const MemoizedParticles = memo(Particles);
 
+// phones: half the frame rate and particles, so the canvas doesn't compete with scrolling
+const isTouch = window.matchMedia("(pointer: coarse)").matches;
+
 const BackgroundParticles = ({ darkMode }) => {
   const [init, setInit] = useState(false);
 
@@ -21,7 +24,7 @@ const BackgroundParticles = ({ darkMode }) => {
         value: "transparent",
       },
     },
-    fpsLimit: 60,
+    fpsLimit: isTouch ? 30 : 60,
     interactivity: {
       events: {
         onHover: {
@@ -63,7 +66,7 @@ const BackgroundParticles = ({ darkMode }) => {
         density: {
           enable: true,
         },
-        value: 100,
+        value: isTouch ? 50 : 100,
       },
       opacity: {
         value: 0.3,
