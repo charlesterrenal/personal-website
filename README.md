@@ -26,8 +26,9 @@ npm run preview   # serve the production build locally
 
 * `src/`: React app. `App.jsx` holds the page; `components/` holds the lazy-loaded sections and the image viewer.
 * `images/`: images served at `/images/` (copied into the container as-is, not processed by Vite).
-* `public/`: files copied to the site root, including `404.html`, `robots.txt` and `sitemap.xml`.
+* `public/`: files copied to the site root, including `404.html`, `theme.js` (sets light/dark before first paint), `robots.txt` and `sitemap.xml`.
 * `Dockerfile`: builds the site with Node, then serves it with Nginx on port 3000.
+* `nginx.conf`: Nginx server config, including the 404 page and security headers (CSP). Update the CSP when adding a new external script, font, iframe or API.
 * `docker-compose.yml`: runs the published image on the server.
 * `.github/workflows/`: CI pipeline that builds and pushes the image on every push to `main`.
 
