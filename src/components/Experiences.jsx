@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 const experiences = [
   {
     company: "stellarph",
-    logo: "images/stellar-logo.png",
+    logo: "images/stellar-logo.webp",
     url: "https://stellarph.io",
     dates: "jun 2026 - present",
     role: "tech intern",
@@ -16,7 +16,7 @@ const experiences = [
   },
   {
     company: "st telemedia gdc",
-    logo: "images/stt-logo.png",
+    logo: "images/stt-logo.webp",
     url: "https://www.sttelemediagdc.com/ph-en/",
     dates: "feb 2026 - may 2026",
     role: "network & security intern",
@@ -28,7 +28,7 @@ const experiences = [
   },
   {
     company: "nexus technologies inc.",
-    logo: "images/nexus-logo.png",
+    logo: "images/nexus-logo.webp",
     url: "https://nexustech.com.ph",
     dates: "jul 2025 - sep 2025",
     role: "solutions & services intern",

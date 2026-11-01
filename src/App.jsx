@@ -155,28 +155,28 @@ function App() {
           {/* Affiliations / Tools Pills */}
           <div className="flex flex-row flex-wrap justify-center sm:justify-start gap-2 sm:gap-2.5 mb-10">
             <a href="https://www.pup.edu.ph/cea/" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
-              <img src="images/pup-logo.png" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
+              <img src="images/pup-logo.webp" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
                 <span className="text-xs font-bold text-black dark:text-white leading-tight transition-colors duration-500">pup</span>
                 <span className="text-[11px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">college of engineering</span>
               </div>
             </a>
             <a href="https://stellarph.io" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
-              <img src="images/stellar-logo.png" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
+              <img src="images/stellar-logo.webp" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
                 <span className="text-xs font-bold text-black dark:text-white leading-tight transition-colors duration-500">stellarph</span>
                 <span className="text-[11px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500">tech intern</span>
               </div>
             </a>
             <a href="https://www.linkedin.com/company/cncp-mnl/" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
-              <img src="images/cncp-logo.jpg" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
+              <img src="images/cncp-logo.webp" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
                 <span className="text-xs font-bold text-black dark:text-white leading-tight transition-colors duration-500">cncp</span>
                 <span className="text-[11px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">ent. networking</span>
               </div>
             </a>
             <a href="https://www.facebook.com/ICPEP.SE.PUPManila" target="_blank" rel="noreferrer" className="pill !no-underline text-left">
-              <img src="images/icpeppup-logo.png" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
+              <img src="images/icpeppup-logo.webp" alt="" className="w-5 h-5 rounded-md object-cover shrink-0" />
               <div className="flex flex-col">
                 <span className="text-xs font-bold text-black dark:text-white leading-tight transition-colors duration-500 whitespace-nowrap">icpep.se - pup manila</span>
                 <span className="text-[11px] text-black/60 dark:text-white/60 leading-tight transition-colors duration-500 whitespace-nowrap">avp internal</span>
@@ -205,9 +205,9 @@ function App() {
           <h2 className="section-title">certifications</h2>
           <div className="mt-8">
             {[
-              { name: "data center foundation certificate (dcfc)", issuer: "epi · oct 2026", logo: "images/epi-logo.png", image: "images/dcfc-certification.webp" },
-              { name: "mechatronics servicing nc ii", issuer: "tesda", logo: "images/tesda-logo.png", image: "images/nc2-ms.webp" },
-              { name: "computer systems servicing nc ii", issuer: "tesda", logo: "images/tesda-logo.png", image: "images/nc2-css.webp" },
+              { name: "data center foundation certificate (dcfc)", issuer: "epi · oct 2026", logo: "images/epi-logo.webp", image: "images/dcfc-certification.webp" },
+              { name: "mechatronics servicing nc ii", issuer: "tesda", logo: "images/tesda-logo.webp", image: "images/nc2-ms.webp" },
+              { name: "computer systems servicing nc ii", issuer: "tesda", logo: "images/tesda-logo.webp", image: "images/nc2-css.webp" },
             ].map((cert, i, certs) => (
               <div key={cert.name} className={`timeline-container${i === certs.length - 1 ? " !pb-0 !border-transparent" : ""}`}>
                 <button onClick={() => openImage(cert.logo, `${cert.issuer.split(" · ")[0]} logo`, true)} aria-label={`View ${cert.issuer.split(" · ")[0]} logo`} className="timeline-icon cursor-pointer">

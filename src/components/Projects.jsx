@@ -7,7 +7,7 @@ const projects = [
   {
     name: "smarth2wo",
     tagline: "iot water dispenser system",
-    logo: "images/smarth2wo-logo.png",
+    logo: "images/smarth2wo-logo.webp",
     repo: "https://github.com/charlesterrenal/smarth2wo",
     live: "https://smarth2wo.tech/",
     slides: [
@@ -45,7 +45,7 @@ const projects = [
   {
     name: "orbit dashboard",
     tagline: "homelab telemetry & command center",
-    logo: "images/orbit-logo.png",
+    logo: "images/orbit-logo.webp",
     repo: "https://github.com/charlesterrenal/orbit-dashboard",
     slides: [
       { src: "images/orbit-dashboard-dark.webp", light: "images/orbit-dashboard-light.webp", alt: "Orbit Dashboard Overview" },
